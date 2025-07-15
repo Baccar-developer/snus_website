@@ -1,0 +1,94 @@
+
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+body{
+	overflow-x:auto
+}
+.for-fill{
+	height : 70vh ;
+}
+
+.nav-link{
+color: var(--bs-light);
+	transition:0.4s linear all
+}
+.nav-link:hover{
+	color: var(--bs-dark);
+}
+
+.produts_list{
+	width: 50vw;
+	display :flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.card ul{
+	list-style-type :none;
+	line-height: 200%
+}
+
+nav{
+
+	position: !important sticky;
+	top: 0;
+}
+
+#search_opt{
+	width :30vw;
+	float:right;
+	background-color : rgb(32,32,32);
+	padding:50px;
+	
+}
+
+#payement_card{
+	background-color : rgb(16,16,16);
+	height :70vh;
+	max-width :70vw;
+	margin:auto;
+	padding: 100px 10%;
+}
+.form-check-input[type=radio]{
+	margin-left: 15px;
+	height :32px;
+	width :32px;
+	background-color : var(--bs-dark);
+	border-color : var(--bs-danger);
+	border-width:2px;
+}
+.form-check-input[type=radio]:checked::after{
+	background-color :var(--bs-danger);
+}
+
+.qnt_display{
+	margin:0 10px;
+	width :100px
+	
+}
+
+.table{
+	width:150%;
+	border-collapse: collapse;
+	overflow-x: auto;
+}
+i{
+	font-size:1.5rem;
+}
+th{
+	min-width:100px;
+	text-align :center;
+}
+
+tr{
+	
+	transition: 0.4s ease-in-out all;
+}
