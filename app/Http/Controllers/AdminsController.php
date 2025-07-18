@@ -20,6 +20,10 @@ class AdminsController extends Controller
             return back()->withErrors(["password"=>"unfound couple of name and password"]);
         }
     }
+    public function log_out(){
+        Auth::guard('admin')->logout();
+        return redirect("/admin_login");
+    }
     /**
      * Display a listing of the resource.
      */

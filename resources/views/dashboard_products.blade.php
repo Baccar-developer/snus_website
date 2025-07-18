@@ -3,7 +3,45 @@
 @section('title')
 Dashboard
 @endsection
+@section("custom")
+
+<div class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">confirm deletion</h5>
+      </div>
+      <div class="modal-body">
+        <p>Modal body text goes here.</p>
+      </div>
+      <div class="modal-footer">
+      <form method='post' action ="{{route('delete_product')}}" >
+      @csrf
+      @method("delete")
+      <input type="number" name="id" style="display:none" id='id' step=1>
+        <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+	$(document).ready(function(){
+		$(".confirm").click(function(){
+			$(".modal").show();
+			$("form #id").attr( 'value',Number($(this).parent().attr("id")))  ;
+			
+		});
+		$(".modal-footer .btn-secondary").click(function(){
+			$(".modal").hide();
+		});
+	});
+</script>
+@endsection
 @section('content')
+<tr>
 <th>id</th>
 <th>name</th>
 <th>description</th>
@@ -17,18 +55,20 @@ Dashboard
 <th width=600px>image</th>
 <th>added at</th>
 <th>actions</th>
+</tr>
 @foreach($data as $row)
 
 	
-	<tr id='{{$row["id"]}}'>
-	<form enctype="multipart/form-data">
-		<th >{{$row["id"]}}</th>
+	<tr >
+	<form enctype="multipart/form-data" method="post" action ="{{route('modify_product')}}">
+		@csrf
+		<th >{{$row["id"]}} <input name='id' type='number' value= {{$row["id"]}}></th>
 		<th ><input type='text' value='{{$row["name"]}}' name='name' class="form-control"></th>
 		<th ><textarea name='desc' class="form-control">{{$row['description']}}</textarea></th>
-		<th ><input type='number' step=0.1 value='{{$row["price_per_DT"]}}' name='price_per_DT' class="form-control"></th>
-		<th ><input type='number' value='{{$row["full_quantity"]}}' name='full_quantity' class="form-control"></th>
-		<th ><input type='number' value='{{$row["ordered_quantity"]}}' name='ordered_quantity' class="form-control"></th>
-		<th ><input type='number' step=0.1 value='{{$row["gains_per_DT"];}}' name='gains_per_DT' class="form-control"></th>
+		<th ><input type='number' step=0.1  min-value=1 value='{{$row["price_per_DT"]}}' name='price_per_DT' class="form-control"></th>
+		<th ><input type='number'   value='{{$row["full_quantity"]}}' name='full_quantity' class="form-control"></th>
+		<th ><label  class="form-label">{{$row["ordered_quantity"]}} </label></th>
+		<th ><label  class="form-label">{{$row["gains_per_DT"];}}</label></th>
 		<th ><label class="form-label">{{ $row['ratings'] }}</label></th>
 		<th ><label class="form-label">{{ $row['sold_quantity'] }}</label></th>
 		<th >
@@ -54,12 +94,12 @@ Dashboard
 			?>
 		</th>
 	
-		<th class='d-flex'><input type='file' accept="image/png, image/jpeg" name='name' class="form-control mb-auto">
-		<img height= 150px src='{{asset("assets/img/".$row["image"])}}'>
+		<th class='d-flex'><input type='file' accept="image/png, image/jpeg" name='image' class="form-control mb-auto">
+		<img height= 150px src="{{asset('storage/img/'.$row['image'])}}">
 		</th>
 		<th><label class="form-label">{{$row["created_at"]}}</label></th>
-		<th><button type="submit" value="modify" class="btn btn-danger m-2">modify</button> 
-		<button type="submit" value="delete" class="btn btn-danger m-2">delete</button></th>
+		<th id='{{$row["id"]}}'> <button type="submit" class="btn btn-danger m-2" >modify</button> 
+		<button type="button" value="delete" class="btn btn-danger m-2 confirm" formaction="{{url('dashboard/products/delete/'.$row['id'])}}">delete</button></th>
 	</form>
 	</tr>
 

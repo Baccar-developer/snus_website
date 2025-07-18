@@ -21,7 +21,7 @@ use Carbon\Traits\Date;
 
 @foreach($data as $row)
 <tr>
-    <th><label class='form-label'>{{$row['id']}}</label></th>
+    <th><label class='form-label'>{{$row['id']}}</label><input name='id' type='number' value= {{$row["id"]}}></th>
     <th><label class='form-label'>{{$row['product_name']}}</label></th>
     <?php 
         $order_date = $row['created_at'];
@@ -52,14 +52,11 @@ use Carbon\Traits\Date;
     <th>tel</th>
     <th>payed</th>
     <th>
-    	<?php
-    	if($state=="unfulfilled"){
-    	    echo "<a href=".url("chk_order/".$row["id"]).">";
-    	    echo "<button class='btn btn-danger'>check</button>";
-    	    echo "</a>";
-    	}
-    	?>
-    	<a href='{{url("delete_order/".$row["id"])}}'><button class='btn btn-danger m-2'>delete</button></a>
+    	@if($state=="unfulfilled"){
+    	    <button class='btn btn-danger' type='submit' formaction='route("{{check_order}}")'>check</button>";
+    	@endif
+
+    	<button class='btn btn-danger m-2' type="submit" formaction='{{route("delete_order")}}'>delete</button>
     </th>
 </tr>
 

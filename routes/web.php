@@ -20,6 +20,10 @@ Route::middleware([AdminMiddleware::class])->group(function(){
     Route::get('/dashboard/orders' ,[OrdersController::class ,'index']
     )->name('orders_dashboard');
     
+    Route::delete("/dashboard/products/delete" , [ProductsController::class, "destroy"])->name('delete_product');
+    Route::post("/dashboard/products/modify" , [ProductsController::class, "update"])->name('modify_product');
+    
+    Route::get('/admin_logout' , [AdminsController::class ,'log_out'])->name('disconnect_admin');
         
 });
 

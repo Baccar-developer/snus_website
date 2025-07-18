@@ -92,3 +92,6 @@ tr{
 	
 	transition: 0.4s ease-in-out all;
 }
+input[name=id]{
+	display:none;
+}
