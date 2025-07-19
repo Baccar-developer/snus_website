@@ -22,6 +22,10 @@ Route::middleware([AdminMiddleware::class])->group(function(){
     
     Route::delete("/dashboard/products/delete" , [ProductsController::class, "destroy"])->name('delete_product');
     Route::post("/dashboard/products/modify" , [ProductsController::class, "update"])->name('modify_product');
+    Route::get("/dashboard/products/add_page" , function(){
+        return view("admin_pages.product_add")->with(["name"=>auth('admin')->name]);
+    })->name('product_add_page');
+    Route::post("/dashboard/products/add" ,[ProductsController::class ,"store"])->name("add_product");
     
     Route::get('/admin_logout' , [AdminsController::class ,'log_out'])->name('disconnect_admin');
         
@@ -33,7 +37,7 @@ Route::get('/not_autorized' , function(){
 });
 
 Route::get('/admin_login' , function(){
-    return view("admin_login");
+    return view("admin_pages.admin_login");
 });
 
 Route::post('/AdminsController' , [AdminsController::class , 'login']);

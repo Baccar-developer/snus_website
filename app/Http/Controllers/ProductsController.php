@@ -18,8 +18,8 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $data = products::all();
-        return view('dashboard_products' )->with(['name'=> Auth::guard('admin')->user()->name , "data"=>$data]);
+        $data = products::orderBy("created_at" , "desc")->cursorPaginate(2);
+        return view('admin_pages.dashboard_products' )->with(['name'=> Auth::guard('admin')->user()->name , "data"=>$data]);
     }
 
     /**
@@ -34,8 +34,23 @@ class ProductsController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(ProductRequest $request)
-    {
-       
+        {
+        if(products::where("name" ,$request->name)->exists()){
+            return back()->withErrors(["not unique"=>"the name '$request->name' already exists"]);
+        }
+        $product = [
+            "name"=>$request->name,
+            "description"=>$request->desc,
+            "price_per_DT"=>$request->price_per_DT,
+            "full_quantity"=>$request->full_quantity,
+        ];
+        if($request->file('image')){
+            $new_name = $request->file('image')->HashName();
+            Storage::disk("public")->put("img" , $request->file('image')  );
+            $product['image'] = $new_name;
+        }
+       products::insert($product);
+       return redirect()->route("dashboard")->with(["msg"=>"insertion is done with success"]);
     }
 
     /**
@@ -57,7 +72,7 @@ class ProductsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(ProductRequest $request)
     {
         $product = products::find($request->id);
         if($request->hasFile("image")){
@@ -89,9 +104,10 @@ class ProductsController extends Controller
     {
         $product = products::find($request->id);
         $name = $product->name;
-        $orders = orders::where("product_name" , $name)->get();
-        if(is_null($orders)){
-            Storage::disk('public')->delete("img/".$product->value('image'));
+        $orders = orders::where("product_name" , $name);
+        
+        if(!$orders->exists()){
+            Storage::disk('public')->delete("img/".$product->image);
             $product->delete();
             return back()->with("msg","$product->name is delete from database with success");
             

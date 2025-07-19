@@ -14,7 +14,7 @@ class OrdersController extends Controller
     public function index()
     {
         $data = orders::all();
-        return view('dashboard_orders' )->with(['name'=> Auth::guard('admin')->user()->name , "data"=>$data]);
+        return view('admin_pages.dashboard_orders' )->with(['name'=> Auth::guard('admin')->user()->name , "data"=>$data]);
     }
 
     /**

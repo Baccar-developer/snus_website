@@ -76,7 +76,7 @@ nav{
 }
 
 .table{
-	width:150%;
+	width:100%;
 	border-collapse: collapse;
 	overflow-x: auto;
 }
@@ -95,3 +95,36 @@ tr{
 input[name=id]{
 	display:none;
 }
+.form-control {
+	margin :10px;
+	background-color : var(--bs-gray-900);
+	color:var(--bs-danger);
+	font-size:1.2rem;
+}
+.form-control:focus {
+	background-color:var(--bs-gray-800);
+	color:var(--bs-danger);
+}
+
+ .form-control::file-selector-button{
+	background-color : var(--bs-gray-900);
+	color:var(--bs-danger);
+ }
+ 
+.form-control::file-selector-button{
+	background-color : var(--bs-gray-900);
+	color:var(--bs-danger);
+ }
+.form-control::file-selector-button:hover{
+	background-color : var(--bs-gray-800) ;
+	color:var(--bs-danger);
+ }
+ 
+ .pagination .page-item .page-link{
+ 	background : var(--bd-grey-900);
+ 	color:var(--bs-danger);
+ }
+ .pagination  .disabled .page-link{
+ 	background: var(--bs-gray-700);
+ 	color : var(--bs-dark);
+ }

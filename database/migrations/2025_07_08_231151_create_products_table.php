@@ -17,12 +17,12 @@ return new class extends Migration
             $table->float('price_per_DT');
             $table->text('description');
             $table->integer('full_quantity');
-            $table->integer('ordered_quantity');
-            $table->float('gains_per_DT');
-            $table->double('rate' , 1,3);
-            $table->unsignedInteger('ratings');
-            $table->unsignedInteger('sold_quantity');
-            $table->string('image' ,100);
+            $table->integer('ordered_quantity')->default(0);
+            $table->float('gains_per_DT')->default(0);
+            $table->double('rate' , 1,3)->default(0);
+            $table->unsignedInteger('ratings')->default(0);
+            $table->unsignedInteger('sold_quantity')->default(0);
+            $table->string('image' ,100)->nullable();
             $table->timestamps();
         });
     }

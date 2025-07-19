@@ -13,13 +13,15 @@
 <div class='container-fluid'>
 @if(session()->has('msg'))
 
-<p class="alert alert-success fs-4">{{session()->get('msg')}}</p>
+<p class="alert alert-success fs-5">{{session()->get('msg')}}</p>
 
 @endif
 @if($errors->any())
+<ul class="alert alert-danger fs-5 p-3">
 @foreach($errors->all() as $err)
-<p class="alert alert-danger fs-4">{{$err}}</p>
+<li >{{$err}}</li>
 @endforeach
+</ul>
 @endif
 
 </div>
@@ -31,11 +33,12 @@
 	<a href='{{route("disconnect_admin")}}'><button type="button" class='btn btn-danger'> log out</button></a>
 </div>
 @yield('custom')
-<table class='table table-dark table-striped table-fluid' >
+<table class='table table-dark table-striped table-fluid fs-5' >
 @yield('content')
 </table>
-
-
+<div class="container-fluid p-3">
+@yield('pagination')
+</div>
 
 </body>
 </html>

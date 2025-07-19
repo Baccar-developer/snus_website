@@ -12,7 +12,7 @@ Dashboard
         <h5 class="modal-title">confirm deletion</h5>
       </div>
       <div class="modal-body">
-        <p>Modal body text goes here.</p>
+        <p>do you realy want to delete this product?</p>
       </div>
       <div class="modal-footer">
       <form method='post' action ="{{route('delete_product')}}" >
@@ -37,8 +37,14 @@ Dashboard
 		$(".modal-footer .btn-secondary").click(function(){
 			$(".modal").hide();
 		});
+		
+		
 	});
 </script>
+<div class="container-fluid m-3 text-center">
+<a href="{{route('product_add_page')}}"><button class='btn btn-danger'>add new product</button></a>
+</div>
+
 @endsection
 @section('content')
 <tr>
@@ -95,13 +101,20 @@ Dashboard
 		</th>
 	
 		<th class='d-flex'><input type='file' accept="image/png, image/jpeg" name='image' class="form-control mb-auto">
+		@if( isset($row['image']))
 		<img height= 150px src="{{asset('storage/img/'.$row['image'])}}">
+		@else
+		<img height= 150px src="{{asset('assets/img/iage.png')}}">
+		@endif
 		</th>
 		<th><label class="form-label">{{$row["created_at"]}}</label></th>
 		<th id='{{$row["id"]}}'> <button type="submit" class="btn btn-danger m-2" >modify</button> 
-		<button type="button" value="delete" class="btn btn-danger m-2 confirm" formaction="{{url('dashboard/products/delete/'.$row['id'])}}">delete</button></th>
+		<button type="button" class="btn btn-danger m-2 confirm" >delete</button></th>
 	</form>
 	</tr>
 
 @endforeach
+@endsection
+@section('pagination')
+{{$data->links()}}
 @endsection

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class ProductRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class ProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return Auth::guard("admin")->check();
     }
 
     /**
@@ -23,6 +24,7 @@ class ProductRequest extends FormRequest
     {
         return [
             "name"=>"string|min:3",
+            "desc"=>'min:1|max:128',
             "image"=>"nullable|image|mimes:png ,jpeg,gif|max:10000"
             
         ];
@@ -32,7 +34,7 @@ class ProductRequest extends FormRequest
         return ["name|min"=>"you can't put a name lesser than 3 chars!",
             "name|string"=> "the name must be conposed of letters!",
             "image|image"=>"must upload an image file",
-            "image|max"=>"image too big";
+            "image|max"=>"image too big"
         ];
     }
 }
