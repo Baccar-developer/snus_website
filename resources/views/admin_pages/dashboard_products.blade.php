@@ -45,6 +45,76 @@ Dashboard
 <a href="{{route('product_add_page')}}"><button class='btn btn-danger'>add new product</button></a>
 </div>
 
+<!-- ------------------filter form ------------------------- -->
+<!--  
+<div class="filter-section">
+	<button class="btn" style='float:right' id ="collapse-btn"><i class="fa-solid fa-minus fs-3"></i></button>
+	
+	<br style="line-height:3">
+	<div id="collapsed" toggled=true>
+	<h1 width=100%>filter <i class="fa-solid fa-filter"></i></h1>
+		<div class="d-flex align-items-center" ><label class="form-label">name:</label><input type="text" name="name"  class="form-control"></div>
+		<div class="d-flex align-items-center">
+		<label class="form-label">price per DT:</label>
+		<input type="number" step=0.01  min=0 max=999 value=999 name="max_price" class="form-control" ><label class="form-label">max</label>
+		<input type="number" step=0.01 min=0 max=999  value=0 name="min_price" class="form-control" ><label class="form-label">min</label>
+		</div>
+		<div class="d-flex align-items-center">
+		<label class="form-label">full quantity:</label>
+		<input type="number"  min=0 max=999  value=999 name="max_qnt" class="form-control" ><label class="form-label">max</label>
+		<input type="number" min=0 max=999  value=0 step=0.01 name="min_qnt" class="form-control" ><label class="form-label">min</label>
+		</div>
+		<div class="d-flex align-items-center">
+		<label class="form-label">ordered quantity:</label>
+		<input type="number"  min=0 max=999  value=999 name="max_ordered" class="form-control" ><label class="form-label">max</label>
+		<input type="number" min=0 max=999  value=0 step=0.01 name="min_ordered" class="form-control" ><label class="form-label">min</label>
+		</div>
+		<div class="d-flex align-items-center">
+		<label class="form-label">sold quantity:</label>
+		<input type="number"  min=0 max=9999  value=9999 name="max_sold" class="form-control" ><label class="form-label">max</label>
+		<input type="number" min=0 max=9999  value=0 step=0.01 name="min_sold" class="form-control" ><label class="form-label">min</label>
+		</div>
+		<div class="d-flex align-items-center">
+		<label class="form-label">gains per DT:</label>
+		<input type="number"  min=0 max=9999  value=9999 name="max_gain" class="form-control" ><label class="form-label">max</label>
+		<input type="number" min=0 max=9999  value=0 step=0.01 name="min_gain" class="form-control" ><label class="form-label">min</label>
+		</div>
+		<div class="d-flex align-items-center">
+		<label class="form-label">rate:</label>
+		<input type="number"  step=0.001 min=0 max=5  value=5 name="max_rate" class="form-control" ><label class="form-label">max</label>
+		<input type="number" step=0.001 min=0 max=5  value=0 step=0.01 name="min_rate" class="form-control" ><label class="form-label">min</label>
+		</div>
+		<div class="d-flex align-items-center">
+		<label class="form-label">added since:</label>
+		<input type="radio"  value=1 name="add_date" class="form-check-input" ><label class="form-label">last 24h</label>
+		<input type="radio"  value=2 name="add_date" class="form-check-input" ><label class="form-label">last week</label>
+		<input type="radio"  value=3 name="add_date" class="form-check-input" ><label class="form-label">last month</label>
+		<input type="radio"  value=4 name="add_date" class="form-check-input" ><label class="form-label">last year</label>
+		
+		</div>
+		<button class="btn btn-dark fs-2" id="filter-button">filter</button>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function(){
+		
+		$("#collapse-btn").click(function(){
+			var toggle_menu = $(this).parent().children("#collapsed");
+			if(toggle_menu.attr("toggled") =='true'){
+				toggle_menu.attr("toggled" , 'false');
+				toggle_menu.css('transform', 'scaleX(0)');
+			}
+			else{
+				toggle_menu.attr("toggled" , 'true');
+				toggle_menu.css('transform', 'scaleX(1)');
+			
+			}
+		});
+	});
+</script>
+-->
+
 @endsection
 @section('content')
 <tr>

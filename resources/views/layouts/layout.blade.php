@@ -20,7 +20,7 @@
 	          <a class="nav-link fs-4 @yield('home_active')"  href="{{url('/')}}">Home</a>
 	        </li>
 	        <li class="nav-item">
-	          <a class="nav-link  fs-4 fs-4 @yield('products_active')" >products</a>
+	          <a class="nav-link  fs-4 fs-4 @yield('products_active')" href="{{url('/shop')}}" >products</a>
 	        </li>
 	        <li class="nav-item">
 	          <a class="nav-link fs-4 @yield('about_active')" href="{{url('/AboutUs')}}">about_us</a>

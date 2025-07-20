@@ -6,6 +6,7 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\AdminsController;
 use App\Http\Controllers\OrdersController;
+use App\Http\Controllers\Eshop;
 
 
 Route::get('/', function () {
@@ -14,6 +15,8 @@ Route::get('/', function () {
 Route::get('/AboutUs', function () {
     return view('about');
 });
+
+Route::get("/shop" ,[Eshop::class , "display_products"]);
 Route::middleware([AdminMiddleware::class])->group(function(){
     Route::get('/dashboard/products' ,[ProductsController::class ,'index']
     )->name('dashboard');
@@ -28,7 +31,9 @@ Route::middleware([AdminMiddleware::class])->group(function(){
     Route::post("/dashboard/products/add" ,[ProductsController::class ,"store"])->name("add_product");
     
     Route::get('/admin_logout' , [AdminsController::class ,'log_out'])->name('disconnect_admin');
-        
+       
+    Route::delete("/dashboard/orders/delete" , [OrdersController::class, "destroy"])->name('delete_order');
+    Route::get("/dashboard/orders/check/{id}" , [OrdersController::class, "check"])->name('check_order');
 });
 
 

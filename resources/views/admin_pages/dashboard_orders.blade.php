@@ -3,6 +3,50 @@ use Carbon\Traits\Date;
 ?>
 @extends("layouts.admin_layout")
 
+@section("title")
+orders dashboard
+@endsection
+
+@section("custom")
+
+<div class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">confirm deletion</h5>
+      </div>
+      <div class="modal-body">
+        <p>do you realy want to delete this product?</p>
+      </div>
+      <div class="modal-footer">
+      <form method='post' action ="{{route('delete_order')}}" >
+      @csrf
+      @method("delete")
+      <input type="number" name="id" style="display:none" id='id' step=1>
+        <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+	$(document).ready(function(){
+		$(".confirm").click(function(){
+			$(".modal").show();
+			$("form #id").attr( 'value',Number($(this).parent().attr("id")))  ;
+			
+		});
+		$(".modal-footer .btn-secondary").click(function(){
+			$(".modal").hide();
+		});
+		
+		
+	});
+</script>
+@endsection
+
 @section('content')
 <tr>
 <th>id</th>
@@ -47,16 +91,23 @@ use Carbon\Traits\Date;
     	if($state =="delivered"){echo "success";}
     	else if($state =="unfulfilled"){echo "danger";}
     	else{echo "light-emphasis";}
-    ?>'>{{$state}}</label></th>
-    <th>delivered at</th>
-    <th>tel</th>
-    <th>payed</th>
+    ?>
+    '>{{$state}}</label></th>
+    <th>{{$row['created_at']}}</th>
+    <th>{{$row['tel']}}</th>
     <th>
-    	@if($state=="unfulfilled"){
-    	    <button class='btn btn-danger' type='submit' formaction='route("{{check_order}}")'>check</button>";
+    @if($row["payed"])
+    	<label class="form-label text-success">payed</label>
+    @else
+    	<label class="form-label text-danger">not payed</label>
+    @endif
+    </th>
+    <th id={{$row['id']}}>
+    	@if($state=="unfulfilled")
+    	    <a class='btn btn-danger' type='submit' href='{{route("check_order" , $row["id"])}}'>check</a>
     	@endif
 
-    	<button class='btn btn-danger m-2' type="submit" formaction='{{route("delete_order")}}'>delete</button>
+    	<button class='btn btn-danger m-2 confirm' type="submit" >delete</button>
     </th>
 </tr>
 

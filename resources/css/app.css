@@ -10,7 +10,8 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 body{
-	overflow-x:auto
+	overflow-x:auto;
+	diplay:inline;
 }
 .for-fill{
 	height : 70vh ;
@@ -64,9 +65,11 @@ nav{
 	background-color : var(--bs-dark);
 	border-color : var(--bs-danger);
 	border-width:2px;
+
 }
-.form-check-input[type=radio]:checked::after{
-	background-color :var(--bs-danger);
+.form-check-input[type=radio]:checked{
+	--bs-form-check-bg-image :url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23ec3939'/%3e%3c/svg%3e");
+
 }
 
 .qnt_display{
@@ -128,3 +131,41 @@ input[name=id]{
  	background: var(--bs-gray-700);
  	color : var(--bs-dark);
  }
+ 
+ .filter-section{
+ z-index:99;
+ 	position:fixed;
+ 	top:0;
+ 	height:100vh;
+ 	float:left;
+ 	padding:20px;
+ 	background : var(--bs-danger);
+ 	font-size: 1.2em;
+ 	font-weight : 700;
+ 	transition :0.4s all ease-in-out;
+ 	
+ }
+ 
+
+ 
+ .filter-section .form-control{
+ 	background : var(--bs-dark);
+ 	height:40px;
+ 	width:100px;
+ 	border-radius: 40px;
+ 	text-aligne:center;
+ }
+
+ 
+ .filter-section .form-check-input{
+ 	height:20px;
+ 	width:20px;
+ }
+ 
+
+ @media(max-width:720px){
+ .filter-section{
+ 	width:100vw;
+ }
+ }
+ 

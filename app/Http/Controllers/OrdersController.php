@@ -60,8 +60,16 @@ class OrdersController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(orders $orders)
+    public function check($id){
+        $order = orders::find($id);
+        $order->update(["state"=>"delivered" , "payed"=>true]);
+        return back()->with("msg" , "order is checked");
+    }
+    
+    public function destroy(Request $request)
     {
-        //
+        orders::destroy($request->id);
+        return back()->with("msg" , "deletion done with sucess");
+        
     }
 }
