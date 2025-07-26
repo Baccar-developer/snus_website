@@ -12,17 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id();
-            $table->string('name' ,20)->unique();
+            $table->id('product_id');
+            $table->string('product_name' ,20)->unique();
             $table->float('price_per_DT');
-            $table->text('description');
-            $table->integer('full_quantity');
-            $table->integer('ordered_quantity')->default(0);
+            $table->text('product_desc');
+            $table->unsignedInteger('full_qnt');
+            $table->unsignedInteger('shipped_qnt')->default(0);
+            $table->unsignedInteger('sold_qnt')->default(0);
             $table->float('gains_per_DT')->default(0);
             $table->double('rate' , 1,3)->default(0);
             $table->unsignedInteger('ratings')->default(0);
-            $table->unsignedInteger('sold_quantity')->default(0);
-            $table->string('image' ,100)->nullable();
+            $table->string('product_image' ,100)->nullable();
             $table->timestamps();
         });
     }

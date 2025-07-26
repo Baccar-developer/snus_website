@@ -4,15 +4,16 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\orders;
+use App\Models\admins;
+use Illuminate\Support\Facades\Hash;
 
-class orders_seeder extends Seeder
+class admin_seeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        orders::factory(20)->create();
+        admins::insert(["name"=>"ousama" , "password"=>Hash::make('aAaA1212&&&')]);
     }
 }

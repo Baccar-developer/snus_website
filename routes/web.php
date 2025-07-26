@@ -45,4 +45,13 @@ Route::get('/admin_login' , function(){
     return view("admin_pages.admin_login");
 });
 
+Route::get('/Login' ,function(){
+    return view("login");
+});
+
+    Route::get('/Signin' ,function(){
+        return view("signin");
+    });
+        
+
 Route::post('/AdminsController' , [AdminsController::class , 'login']);

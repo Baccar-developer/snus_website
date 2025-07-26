@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\products;
+use Database\Factories\productsFactory;
 
 class product_seeder extends Seeder
 {
@@ -13,16 +14,9 @@ class product_seeder extends Seeder
      */
     public function run(): void
     {
-        products::create([
-            "name"=>"Killa",
-            "description"=>"this is a snus with flavor of .........",
-            "price_per_DT"=>35,
-            "full_quantity"=>20,
-            "ordered_quantity"=>2,
-            "gains_per_DT"=>100,
-            "ratings"=>0, "rate"=>0,
-            "sold_quantity"=>10,
-            "image"=>"Killa.png"
-        ]);
+        $prodct_names=["killa" , "velo" ,"pablo"];
+        foreach ($prodct_names as $name){
+            $product  = products::factory(1)->create(["product_name"=>$name , "product_image"=>$name.'.jpeg']);
+        }
     }
 }

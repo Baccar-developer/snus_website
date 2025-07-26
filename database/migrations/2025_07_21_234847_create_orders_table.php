@@ -12,22 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->id();
-            $table->string('product_name',20);
-            $table->unsignedbigInteger('quantity');
-            $table->double('order_price' , 3,3);
-            $table->string('governorate' , 20);
-            $table->string('location' , 50);
-            $table->enum("state", ["delivered" ,"canceled","unfulfilled"]);
+            $table->id("order_id");
+            $table->string('location' , 100);
+            $table->enum("order_status", ["delivered" ,"canceled","unfulfilled"]);
             $table->dateTime("delivered_at")->nullable(true);
             
+            $table->foreignId("chart_id")->constrained("charts" ,"chart_id");
+            
             $table->timestamps();
-            $table->foreign('product_name')
-            ->references('name')
-            ->on('products')
-            ->onDelete('no action');
-            $table->string('tel', 8);
-            $table->boolean('payed');
         });
     }
 

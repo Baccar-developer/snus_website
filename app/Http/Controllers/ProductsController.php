@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+product_namespace App\Http\Controllers;
 use Illuminate\Support\Facades\View;
 use App\Models\products;
 use App\Models\orders;
@@ -18,8 +18,8 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $data = products::orderBy("created_at" , "desc")->cursorPaginate(2);
-        return view('admin_pages.dashboard_products' )->with(['name'=> Auth::guard('admin')->user()->name , "data"=>$data]);
+        $data = products::orderBy("created_at" , "product_desc")->cursorPaginate(2);
+        return view('admin_pages.dashboard_products' )->with(['product_name'=> Auth::guard('admin')->user()->product_name , "data"=>$data]);
     }
 
     /**
@@ -35,19 +35,19 @@ class ProductsController extends Controller
      */
     public function store(ProductRequest $request)
         {
-        if(products::where("name" ,$request->name)->exists()){
-            return back()->withErrors(["not unique"=>"the name '$request->name' already exists"]);
+        if(products::where("product_name" ,$request->product_name)->exists()){
+            return back()->withErrors(["not unique"=>"the product_name '$request->product_name' already exists"]);
         }
         $product = [
-            "name"=>$request->name,
-            "description"=>$request->desc,
+            "product_name"=>$request->product_name,
+            "product_desc"=>$request->product_desc,
             "price_per_DT"=>$request->price_per_DT,
-            "full_quantity"=>$request->full_quantity,
+            "full_qnt"=>$request->full_qnt,
         ];
         if($request->file('image')){
-            $new_name = $request->file('image')->HashName();
+            $new_product_name = $request->file('image')->Hash_name();
             Storage::disk("public")->put("img" , $request->file('image')  );
-            $product['image'] = $new_name;
+            $product['image'] = $new_product_name;
         }
        products::insert($product);
        return redirect()->route("dashboard")->with(["msg"=>"insertion is done with success"]);
@@ -74,7 +74,7 @@ class ProductsController extends Controller
      */
     public function update(ProductRequest $request)
     {
-        $product = products::find($request->id);
+        $product = products::find($request->product_id);
         if($request->hasFile("image")){
             if($product->image && Storage::exists("img/".$product->image)){
                 
@@ -82,15 +82,15 @@ class ProductsController extends Controller
             }
             $file =$request->file('image');
             
-            $new_name=$file->HashName();
+            $new_product_name=$file->Hashproduct_name();
             Storage::disk("public")->put("img" , $file ,'public' );
-            $product->update(["image" => $new_name]);
+            $product->update(["image" => $new_product_name]);
         }
         $product->update(
             [
-                "name"=>$request->name,
-                "description"=>$request->desc,
-                "full_quantity"=>$request->full_quantity,
+                "product_name"=>$request->product_name,
+                "product_desc"=>$request->product_desc,
+                "full_qnt"=>$request->full_qnt,
             ]
             );
         return back()->with("msg","the updates are done with success");
@@ -102,16 +102,6 @@ class ProductsController extends Controller
 
     public function destroy(Request $request)
     {
-        $product = products::find($request->id);
-        $name = $product->name;
-        $orders = orders::where("product_name" , $name);
-        
-        if(!$orders->exists()){
-            Storage::disk('public')->delete("img/".$product->image);
-            $product->delete();
-            return back()->with("msg","$product->name is delete from database with success");
-            
-        }
-        return back()->withErrors(["existing orders"=>"you can't delete $name because there aresome remainig orders"]);
+        //
     }
 }

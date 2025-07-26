@@ -10,7 +10,7 @@
 <body class='bg-dark text-light'>
 <nav class="navbar navbar-expand-lg bg-danger ">
 	  <div class="container-fluid ">
-	    <a class="navbar-brand fs-3 text-light fw-bold" href="#">Title_here</a>
+	    <a class="navbar-brand fs-3 text-light" href="#">LOGO</a>
 	    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 	      <span class="navbar-toggler-icon"></span>
 	    </button>
@@ -24,6 +24,8 @@
 	        </li>
 	        <li class="nav-item">
 	          <a class="nav-link fs-4 @yield('about_active')" href="{{url('/AboutUs')}}">about_us</a>
+	        </li><li class="nav-item">
+	          <a class="nav-link fs-4 @yield('login_active')" href="{{url('/Login')}}">login</a>
 	        </li>
 	        <li class="nav-item">
 	        </li>
@@ -38,8 +40,10 @@
 		<li>:**********phone number:</li>
 		<li><p>our social media pages</p>
 			<p><i class="fa-brands fa-facebook"></i></p></li>
+		<li>creator and first editor of this website: 'mohammed amine baccar'</li>
 	</ul>
 	<p>delivery to Sousse only</p>
+	
 </footer>
 </body>
 </html>

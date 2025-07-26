@@ -4,15 +4,15 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\orders;
+use App\Models\customers;
 
-class orders_seeder extends Seeder
+class customers_seeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        orders::factory(20)->create();
+        customers::factory(10)->create();
     }
 }
