@@ -22,11 +22,12 @@ class productsFactory extends Factory
             'product_desc'=> fake()->text(),
             'price_per_DT'=>$price,
             'full_qnt'=>$full_qnt,
-            'shipped_qnt' =>fake()->biasedNumberBetween(0 ,$full_qnt),
+            'ordered_qnt' =>fake()->biasedNumberBetween(0 ,$full_qnt),
             'sold_qnt'=>fake()->biasedNumberBetween( 1,8),
             'gains_per_DT'=> fake()->biasedNumberBetween( 1,8) *$price,
             'rate'=>fake()->randomFloat(3,0,5),
-            'ratings'=>fake()->biasedNumberBetween( 2,10)
+            'ratings'=>fake()->biasedNumberBetween( 2,10),
+            "wished_qnt"=> fake()->biasedNumberBetween(0 ,20)
         ];
     }
 }

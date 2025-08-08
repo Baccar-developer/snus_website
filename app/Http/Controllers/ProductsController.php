@@ -1,6 +1,6 @@
 <?php
 
-product_namespace App\Http\Controllers;
+namespace App\Http\Controllers;
 use Illuminate\Support\Facades\View;
 use App\Models\products;
 use App\Models\orders;
@@ -18,7 +18,7 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $data = products::orderBy("created_at" , "product_desc")->cursorPaginate(2);
+        $data = products::orderBy("created_at" ,"desc")->paginate(10);
         return view('admin_pages.dashboard_products' )->with(['product_name'=> Auth::guard('admin')->user()->product_name , "data"=>$data]);
     }
 
@@ -45,14 +45,29 @@ class ProductsController extends Controller
             "full_qnt"=>$request->full_qnt,
         ];
         if($request->file('image')){
-            $new_product_name = $request->file('image')->Hash_name();
-            Storage::disk("public")->put("img" , $request->file('image')  );
-            $product['image'] = $new_product_name;
+            $new_product_name = $request->file('image')->hashName();
+            Storage::disk("public")->putFileAs("product_img" , $request->file('image')  ,$new_product_name );
+            $product['product_image'] = $new_product_name;
         }
        products::insert($product);
        return redirect()->route("dashboard")->with(["msg"=>"insertion is done with success"]);
     }
-
+    
+    
+    public function filter(Request $request){
+        $rate_ord ="desc";
+        $date_ord ="desc";
+        if(!$request->rate_order){$rate_ord="asc";}
+        if(!$request->date_order){$date_ord="asc";}
+        $data =products::where("product_name", "LIKE", $request->name."%")
+        ->orderBy("created_at" , $date_ord)
+        ->orderBy("product_rate" , $rate_ord);
+        
+        if($data->first()){$data = $data->paginate();}
+        else{return "";}
+        
+        return view("includes.products")->with("data",$data);
+    }
     /**
      * Display the specified resource.
      */
@@ -74,25 +89,26 @@ class ProductsController extends Controller
      */
     public function update(ProductRequest $request)
     {
-        $product = products::find($request->product_id);
+        $product = products::where("product_id" , $request->product_id)->first();
+        $new= [];
         if($request->hasFile("image")){
-            if($product->image && Storage::exists("img/".$product->image)){
+            if($product->product_image && Storage::disk("public")->exists("product_img/".$product->product_image)){
                 
-                Storage::disk("public")->delete("img/".$product->image);
+                Storage::disk("public")->delete("product_img/".$product->product_image);
             }
             $file =$request->file('image');
             
-            $new_product_name=$file->Hashproduct_name();
-            Storage::disk("public")->put("img" , $file ,'public' );
-            $product->update(["image" => $new_product_name]);
+            $new_product_name=$file->hashName();
+            Storage::disk("public")->putFileAs("product_img" , $request->file("image") ,$new_product_name );
+            $new = ["product_image" => $new_product_name];
         }
-        $product->update(
+        $new =array_merge($new ,
             [
                 "product_name"=>$request->product_name,
                 "product_desc"=>$request->product_desc,
                 "full_qnt"=>$request->full_qnt,
-            ]
-            );
+            ]);
+        products::where("product_id" ,$request->product_id)->update($new);
         return back()->with("msg","the updates are done with success");
     }
 

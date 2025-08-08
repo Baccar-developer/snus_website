@@ -17,7 +17,7 @@ class reviewsFactory extends Factory
     public function definition(): array
     {
         return [
-            "rate"=>fake()->randomFloat(0,5),
+            "rate"=>rand(0,5),
             "comment"=>fake()->realTextBetween(5 ,100)
         ];
     }

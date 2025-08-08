@@ -10,8 +10,15 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "guzzlehttp/guzzle": "^7.9",
         "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1"
+        "laravel/tinker": "^2.10.1",
+        "nyholm/psr7": "^1.8",
+        "php-http/guzzle7-adapter": "^1.1",
+        "phpmailer/phpmailer": "^6.10",
+        "propaganistas/laravel-phone": "^6.0",
+        "symfony/http-client": "^7.3",
+        "twilio/sdk": "^8.7"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
         
         $this->call([product_seeder::class ,
             admin_seeder::class,
-            customers_seeder::class,
+            users_seeder::class,
             charts_seeder::class,
             orders_seeder::class,
             chart_elements_seeder::class,

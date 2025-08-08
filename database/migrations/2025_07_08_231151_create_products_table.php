@@ -17,10 +17,11 @@ return new class extends Migration
             $table->float('price_per_DT');
             $table->text('product_desc');
             $table->unsignedInteger('full_qnt');
-            $table->unsignedInteger('shipped_qnt')->default(0);
+            $table->unsignedInteger('wished_qnt');
+            $table->unsignedInteger('ordered_qnt')->default(0);
             $table->unsignedInteger('sold_qnt')->default(0);
             $table->float('gains_per_DT')->default(0);
-            $table->double('rate' , 1,3)->default(0);
+            $table->float('rate')->default(0);
             $table->unsignedInteger('ratings')->default(0);
             $table->string('product_image' ,100)->nullable();
             $table->timestamps();

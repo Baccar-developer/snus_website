@@ -3,114 +3,7 @@ use Carbon\Traits\Date;
 use App\Models\chart_elements;
 use App\Models\products;
 ?>
-@extends("layouts.admin_layout")
-
-@section("title")
-orders dashboard
-@endsection
-
-@section("custom")
-
-<div class="modal" tabindex="1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content text-light bg-dark">
-      <div class="modal-header">
-        <h5 class="modal-title">confirm deletion</h5>
-      </div>
-      <div class="modal-body">
-        <p>do you realy want to delete this order?</p>
-      </div>
-      <div class="modal-footer">
-      <form method='post' action ="{{route('delete_order')}}" >
-      @csrf
-      @method("delete")
-      <input type="number" name="order_id" style="display:none" id='id' step=1>
-        <button type="submit" class="btn btn-danger">Delete</button>
-        </form>
-        <button type="button" class="btn btn-secondary" data-dismiss=".modal[tabindex='1']">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal" tabindex="2" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content text-light bg-dark">
-      <div class="modal-header">
-        <h5 class="modal-title">check order</h5>
-      </div>
-      <form method='post' action="{{route('check_order')}}">
-      <div class="modal-body">
-        <p>is this order delivered?</p>
-        <p id="payed">is it payed? <input type="checkbox" name="payed" class="form-check-input" checked></p>
-      </div>
-      <div class="modal-footer">
-      <input name="order_id" type="hidden" id="id2">
-      @csrf
-      @method("patch")
-      <input type="hidden" name="order_id" id='id'>
-        <button type="submit" class="btn btn-danger">check</button>
-        
-        <button type="button" class="btn btn-secondary" data-dismiss=".modal[tabindex='2']">Close</button>
-      </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<script>
-	$(document).ready(function(){
-		$(".modal-footer .btn-secondary").click(function(){
-			$($(this).attr("data-dismiss")).hide();
-		});
-	});
-</script>
-
-<!-- ---filter inputs-------- -->
-<div id="filter-bar" class="container-fluid d-flex align-items-center justify-content-center">
-	<label>order status</label>
-	<ul style="list-style :none; text-align:end">
-		<li><label class="text-success">delivered</label> <input class="form-check-input" type="radio" id="delivererd" name="status"></li>
-		<li><label class="text-warning">unfulfiled</label> <input class="form-check-input" type="radio" id="unfulfilled" name="status"></li>
-		<li><label class="text-secondary">canceled</label> <input class="form-check-input" type="radio" id="canceled" name="status"></li>
-	</ul>
-	<label class="ms-3 me-1"> order by order date:</label>ascend @include("includes.switch_box" ,["name"=>"date-order"])descend
-	<label class="ms-3 me-1"> order by price:</label>ascend @include("includes.switch_box" ,["name"=>"price-order"])descend
-</div>
-
-<script>
-	function filter(){
-		dat={
-			delivered : $("#delivererd").prop("checked"),
-			unfulfilled : $("#unfulfilled").prop("checked"),
-			canceled : $("#canceled").prop("checked"),
-			date_order: $(".switch_button.date-order input").attr("value"),
-			price_order: $(".switch_button.price-order input").attr("value"),
-			_token :'{{csrf_token()}}'
-			
-		};
-		$.ajax({
-			url : "{{url('/admin/orders/filter')}}",
-			method:'post',
-			data :dat,
-			success: function(data){ $("#filter").html(data)},
-			error: function(xhr, ajaxOptions, thrownErro){ $("#filter").html( '<div class="container-fluid text-center fs-3">'+thrownErro+ '</div>')},
-			dataType:'html'
-		});
-	}
-
-	$("#filter-bar input").change(function(){
-		filter()
-	})
-	
-	$('.switch_button').click(function(){
-		setTimeout(filter , 100);
-	})
-</script>
-
-@endsection
-
-@section('content')
+<table class="table table-dark table-striped fs-5">
 <tr>
 <th>id</th>
 <th>products</th>
@@ -224,10 +117,6 @@ orders dashboard
     	@endif
     </th>
 </tr>
-
 @endforeach
-@endsection
-
-@section('pagination')
+</table>
 {{$data->links()}}
-@endsection

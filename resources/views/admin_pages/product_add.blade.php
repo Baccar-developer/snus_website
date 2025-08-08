@@ -15,10 +15,10 @@ add product
 <tr>
 	<form method="post"enctype="multipart/form-data" action="{{route('add_product')}}">
 		@csrf
-		<td><input type="text" name="name" class="form-control"></td>
-		<td> <textarea name="desc" class="form-control"></textarea></td>
+		<td><input type="text" name="product_name" class="form-control"></td>
+		<td> <textarea name="product_desc" class="form-control"></textarea></td>
 		<td><input type="number" min-value=1 value=1 name="price_per_DT" class="form-control"></td>
-		<td><input type="number" min-value=0 value=0 name="full_quantity" class="form-control"></td>
+		<td><input type="number" min-value=0 value=0 name="full_qnt" class="form-control"></td>
 		<td><input accept="image/png, image/jpeg"type="file"  name="image" class="form-control"></td>
 		<td><button class="btn btn-danger">add</button></td>
 </form>

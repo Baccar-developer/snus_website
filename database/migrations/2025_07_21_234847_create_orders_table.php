@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id("order_id");
             $table->string('location' , 100);
-            $table->enum("order_status", ["delivered" ,"canceled","unfulfilled"]);
+            $table->enum("order_status", ["delivered" ,"canceled","unfulfilled"])->default("unfulfilled");
             $table->dateTime("delivered_at")->nullable(true);
-            
+            $table->float("price_per_DT");
+            $table->boolean("payed");
             $table->foreignId("chart_id")->constrained("charts" ,"chart_id");
             
             $table->timestamps();

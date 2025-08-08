@@ -12,7 +12,14 @@
 *{
 	font-weight:700;
 	font-color :var(--bs-light);
+    
+}
+.fluid_container , .container , .alert{
+	padding-left :100px !important;
+}
 
+img{
+	object-fit :cover;
 }
 
 a{
@@ -36,7 +43,7 @@ p{
 }
 
 .for-fill{
-	height : 90vh ;
+	min-height : 90vh ;
 	padding:50px;
 }
 
@@ -121,11 +128,17 @@ nav{
 	--bs-form-check-bg-image :url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23ec3939'/%3e%3c/svg%3e");
 
 }
-.form-check-input:checked[type=checkbox]{
-	background-color : var(--bs-danger);
-	--bs-form-check-bg-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23121212' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
-	--bs-form-check-bg : var(--bs-dark);
+.form-check-input[type=checkbox]{
+	background-color:var(--bs-dark);
+    border-color:var(--bs-danger);
+	
 }
+.form-check-input:checked{
+    --bs-form-check-bg-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23121212' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e") !important;
+	
+	background-color:var(--bs-danger)
+}
+
 .qnt_display{
 	margin:0 10px;
 	width :100px
@@ -133,7 +146,8 @@ nav{
 }
 
 .table{
-	width:100%;
+	
+	min-width:100%;
 	border-collapse: collapse;
 	overflow-x: auto;
 }
@@ -149,15 +163,22 @@ tr{
 	
 	transition: 0.4s ease-in-out all;
 }
+.alert {
+	margin-x:0;
+}
+
 input[name=id]{
 	display:none;
 }
-.form-control {
+.form-control , .form-control:is(:-webkit-autofill, :autofill){
 	margin :10px;
 	background-color : var(--bs-gray-900)!important;
 	color:var(--bs-light) !important;
 	border:1px solid var(--bs-danger);
 	font-size:1.2rem;
+}
+.form-control::placeholder {
+	color : var(--bs-gray-500)
 }
 .form-control:focus {
 	background-color:var(--bs-gray-800);
@@ -177,10 +198,12 @@ input[name=id]{
 	background-color : var(--bs-gray-800) ;
 	color:var(--bs-danger);
  }
+ .form-control[type='number']{width :100px !important; }
+ 
  
  .form-container{
  background: var(--bs-gray-800);
-  width:33vw;
+  width:50vw;
  }
  
  .pagination .page-item .page-link{
@@ -191,42 +214,109 @@ input[name=id]{
  	background: var(--bs-gray-700);
  	color : var(--bs-dark);
  }
- 
- .filter-section{
- z-index:99;
- 	position:fixed;
- 	top:0;
- 	height:100vh;
- 	float:left;
- 	padding:20px;
- 	background : var(--bs-danger);
- 	font-size: 1.2em;
- 	font-weight : 700;
- 	transition :0.4s all ease-in-out;
- 	
- }
- 
 
- 
- .filter-section .form-control{
- 	background : var(--bs-dark);
- 	height:40px;
- 	width:100px;
- 	border-radius: 40px;
- 	text-aligne:center;
- }
+.single_digit_input{
+	background-color : var(--bs-dark);
+	align-text:center;
+	border-radius : 5px;
+	border:none;
+	color:var(--bs-light);
+	font-size: 2rem;
+	width: 3rem;
+	padding: 5px 5px;
+	margin: 10px;
+} 
 
- 
- .filter-section .form-check-input{
- 	height:20px;
- 	width:20px;
- }
- 
+.sidebar{
+	z-index:98;
+	position:fixed;
+	top:82px;
+	left:0;
+	height: 100vh;
+	float:left;
+	background-color:var(--bs-dark);
+}
+.sidebar-btn{
+	list-style:none;
+	padding:0;
+	
+}
 
- @media(max-width:720px){
- .filter-section{
- 	width:100vw;
- }
+.sidebar li .nav-link{
+	
+	align-items:center;
+	justify-content:center !important;
+	
+    display : grid;
+    grid-template-columns : 1fr auto;
+	
+}
+
+.sidebar li .nav-link:hover{
+	color:var(--bs-danger) !important
+}
+
+.sidebar li .nav-link i{
+	height:25px;
+	width:25px
+}
+
+.sidebar li .nav-link span{
+	text-align:right;
+    height:25px;
+    width:0;
+    margin-right:0;
+    overflow: hidden;
+	
+}
+
+.modal{
+	background-color: rgba(0.2,0.2,0.2 ,0.5);
+}
+.modal-dialog.big{
+    position:static;
+    max-width: 100vw
+}
+.modal-content.big{
+    position:static;
+    margin:auto;
+	height:90vh;
+	width:80vw;
+	
+}
+
+.star_bar{
+	list-style:none;
+	display:flex;
+	
+}
+.star_bar li{
+	color:#FFD34B;
+}
+
+
+.switch_button{
+       width:50px;
+       height:20px;
+       background-color :var(--bs-danger);
+       border-radius : 10px;
+       cursor:pointer;
+       margin:10px;
+       border: var(--bs-danger) 2px solid;
+       transition:all ease-in-out 0.4s
+}
+.switch_button .ball{
+    background-color:var(--bs-gray-700);
+    height:16px;
+    width:16px;
+    border-radius:50%;
+    position:relative;
+    top:0;left:30px;
+    transition:all ease-in-out 0.4s
+    
+}
+ @media(max-width:960px){
+
  .form-container{
     width:70vw
  }

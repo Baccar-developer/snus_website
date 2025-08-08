@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reviews', function (Blueprint $table) {
-            $table->foreignId("customer_id")->constrained("customers" , "customer_id" )->primary();
+            $table->foreignId("customer_id")->constrained("users" ,"id")->primary();
             $table->foreignId("product_id")->constrained("products", "product_id" )->primary();
-            $table->float("rate" ,1,1)->nullable(false);
+            $table->smallInteger("rate")->nullable(false);
             $table->text("comment")->nullable(true);
             $table->timestamps();
         });

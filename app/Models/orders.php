@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class orders extends Model
 {
     use HasFactory;
-    protected $fillable=["chart_id" , "location" , "order_status" , "delivered_at"];
+    protected $fillable=["chart_id" , "location" , "order_status" , "delivered_at" ,"price_per_DT"];
 }

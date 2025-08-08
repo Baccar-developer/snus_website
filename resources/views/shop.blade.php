@@ -10,36 +10,19 @@ active
     <div class='card col-12 my-2 mx-auto' style='width:50vw'>
     <div class="row">
     	<div class="col-6">
-    	<img src="{{asset('storage/product_img/'.$best['product_image'])}}" class="card-img-top">
+    	<img src="{{asset('storage/product_img/'.$best->product_image)}}" class="card-img-top">
     	</div>
     	<div class='col-6'>
     	<div class="card-body text-light">
 			<h4>{{$best["product_name"]}}</h4>
+			<h5>{{$best->product_desc}}</h5>
 		    <ul>
 				<li>price : {{$best["price_per_DT"]}}DT</li>
 				<li>rating : 
-					<?php 
-					$num = floor($best['rate']);
-				for($i= 0; $i< $num; $i++){
-					echo '<i class="fas fa-star" style="color: #FFD43B;"></i>';
-				}
-				$decimal = $best["rate"] - $num;
-				if ($decimal < 0.33){
-					echo '<i class="far fa-star" style="color: #FFD43B;"></i>';
-				}
-				else if ($decimal < 0.67){
-					echo '<i class="far fa-star-half-stroke" style="color: #FFD43B;"></i>';
-				}
-				else{
-					echo '<i class="fas fa-star" style="color: #FFD43B;"></i>';
-				}
-				for ($i= $num; $i< 4 ; $i++){
-					echo '<i class="far fa-star" style="color: #FFD43B;"></i>';
-					
-				}
-			?>
+					@include("includes.rate",["rate"=>$best->product_rate])
 				</li>
-				<li> <a class="btn btn-danger rounded-5 p-1" href="purchase_page.html">purchase</a></li>
+				<li> <a class="btn btn-danger rounded-4 px-3 py-2 m-2" href="{{route('add_to_cart' ,$best->product_id)}}">Add to cart </a></li>
+				<li> <a class="btn btn-danger rounded-4 px-3 py-2 m-2" href="{{route('product_reviews' , $best->product_id)}}">All reviews </a></li>
 			</ul>
 		  </div>
     	</div>
@@ -57,31 +40,14 @@ active
 		  <img src="{{asset('storage/product_img/'.$row['product_image'])}}" class="card-img-top" alt="...">
 		  <div class="card-body text-light">
 			<h4>{{$row["product_name"]}}</h4>
+			<h5>{{$row->product_desc}}</h5>
 		    <ul>
 				<li>price : {{$row["price_per_DT"]}}DT</li>
 				<li>rating : 
-					<?php 
-				$num = floor($row['rate']);
-				for($i= 0; $i< $num; $i++){
-					echo '<i class="fas fa-star" style="color: #FFD43B;"></i>';
-				}
-				$decimal = $row["rate"] - $num;
-				if ($decimal < 0.33){
-					echo '<i class="far fa-star" style="color: #FFD43B;"></i>';
-				}
-				else if ($decimal < 0.67){
-					echo '<i class="far fa-star-half-stroke" style="color: #FFD43B;"></i>';
-				}
-				else{
-					echo '<i class="fas fa-star" style="color: #FFD43B;"></i>';
-				}
-				for ($i= $num; $i< 4 ; $i++){
-					echo '<i class="far fa-star" style="color: #FFD43B;"></i>';
-					
-				}
-			?>
+				@include('includes.rate' ,['rate'=>$row["product_rate"]])
 				</li>
-				<li> <a class="btn btn-danger rounded-5 p-1" href="purchase_page.html">purchase</a></li>
+				<li> <a class="btn btn-danger rounded-4 px-3 py-2 m-2" href="{{route('add_to_cart' ,$row->product_id)}}">Add to cart </a></li>
+				<li> <a class="btn btn-danger rounded-4 px-3 py-2 m-2" href="{{route('product_reviews' , $row->product_id)}}">All reviews </a></li>
 			</ul>
 		  </div>
 		</div>
@@ -91,4 +57,6 @@ active
 
 </div>
 {{$data->links()}}
+
+
 @endsection

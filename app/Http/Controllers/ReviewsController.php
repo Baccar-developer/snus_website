@@ -3,63 +3,62 @@
 namespace App\Http\Controllers;
 
 use App\Models\reviews;
+use App\Models\products;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReviewsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
+    public function user_reviews(){
+        $reviews = reviews::where("customer_id" , Auth::id())->limit(4);
+        $reviews = $reviews->leftJoin("products as p" , "p.product_id", "=" , "reviews.product_id")->orderBy("reviews.created_at","desc")
+        ->get(["product_name" , "product_image" , "product_rate" , "rate" , "comment", "reviews.product_id" , "reviews.created_at" ]);
+        
+        return view("auth.user_reviews" ,compact("reviews"));
+        
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+    
+    public function user_reviews_scroll(Request $request ){
+        $reviews = reviews::where("customer_id" , Auth::id())->offset($request->start)->limit($request->step);
+        $reviews = $reviews->leftJoin("products as p" , "p.product_id", "=" , "reviews.product_id")->orderBy("reviews.created_at","desc")
+        ->get(["product_name" , "product_image" , "product_rate" , "rate" , "comment", "reviews.product_id" , "reviews.created_at" ]);
+        
+        return view("includes.user_reviews" ,compact("reviews"));
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+    
+    public function product_reviews(int $product_id){
+        $product =products::where('product_id',$product_id)->first();
+        $reviews = reviews::where("reviews.product_id" , $product_id)->limit(4);
+        $reviews = $reviews->leftJoin("users" ,"users.id" ,'=' ,'reviews.customer_id')
+        ->get(["customer_id" ,"avatar" ,"customer_name" ,"rate" ,"comment" ,"reviews.created_at" ]);
+        return view("product_reviews" ,compact('reviews'))->with("product" ,$product);
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(reviews $reviews)
-    {
-        //
+    public function product_reviews_scroll(int $product_id ,Request $request){
+        $reviews = reviews::where("product_id" , $product_id)->offset($request->start)->limit($request->step);
+        $reviews = $reviews->leftJoin("users" ,"users.id" ,'=' ,'reviews.customer_id')
+        ->get(["customer_id" ,"avatar" ,"customer_name" ,"rate" ,"comment" ,"reviews.created_at"]);
+        return view("includes.product_reviews" ,compact('reviews'));
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(reviews $reviews)
-    {
-        //
+    
+    public function create( Request $request){
+        
+        $chng =reviews::insert([
+            "product_id"=>$request->product_id,
+            "customer_id"=>Auth::id(),
+            "rate"=>$request->rate,
+            "comment"=>$request->comment,
+        ]);
+        if(!$chng){
+            return back()->withErrors("this review isn't sent");
+        }
+        else{
+            $product = products::where("product_id" ,$request->product_id)->first();
+            $rate = ($product->product_rate * $product->ratings+ $request->rate)/$product->ratings;
+            $chng = products::where("product_id" , $request->product_id)->update(["ratings" =>$product->ratings+1 ,"product_rate"=>$rate]);
+            if ($chng){return back()->with("msg" , "your review is sent!");}
+            else{return back()->withErrors("the product general rate isn't updated");}
+        }
+        
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, reviews $reviews)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(reviews $reviews)
-    {
-        //
-    }
+    
 }
