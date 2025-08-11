@@ -25,7 +25,7 @@ active
 	</div>
 	<img class="col-md-4 col-sm-6" src="{{asset('assets/img/killa.webp')}}">
 	</div>
-	<button class="btn btn-danger fs-2 ps-3 pe-3">shop now</button>
+	<a href="{{route('/shop')}}"><button class="btn btn-danger fs-2 ps-3 pe-3">shop now</button></a>
 	
 	<br><br><br>
 	<p class='fs-6 font-weight-light text-secondary align-content-center'><i class="fa-solid fa-copyright"></i> all rights are reserved</p>
