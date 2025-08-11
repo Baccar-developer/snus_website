@@ -19,6 +19,14 @@ use Illuminate\Support\Facades\Cookie;
 
 Route::get("/shop" ,[Eshop::class , "display_products"]);
 
+Route::get("/restore_account" , function(){
+    return view("verification.account_restore");
+});
+Route::post("/restore_account/validation" , [UsersControler::class , 'restore_code'])->name("account_validation");
+Route::get("/reset_password" ,[UsersControler::class , 'reset_password_form']);
+
+Route::put("/reset_password/reset" ,[UsersControler::class , 'reset_password'])->name("reset_password");
+
 Route::middleware([AdminMiddleware::class])->group(function(){
     Route::get('/admin/products' ,[ProductsController::class ,'index']
     )->name('dashboard');
@@ -107,7 +115,7 @@ Route::middleware(AuthMiddleWare::class)->group(function(){
     Route::get("shop/add_to_cart/{product_id}" , [ChartElementController::class , "create"])->name("add_to_cart");
 
     
-    Route::post('profile/email_email' , [UsersControler::class , 'change_email'])->name("change_email");
+    Route::patch('profile/email_email' , [UsersControler::class , 'change_email'])->name("change_email");
     Route::get("/logout", function(){
         Auth::logout();
         Cookie::forget("user_tocken");

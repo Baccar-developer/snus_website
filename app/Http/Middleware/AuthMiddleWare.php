@@ -19,11 +19,7 @@ class AuthMiddleWare
     public function handle(Request $request, Closure $next): Response
     {
         
-        $user = User::find(2);
-        Auth::login($user);
-        return $next($request);
         
-        /*
         if(Auth::check()){
             return $next($request);
         }
@@ -38,6 +34,6 @@ class AuthMiddleWare
                 return redirect("/login")->with("msg", Auth::user()->customer_name);
             }
         }
-        */
+        
     }
 }

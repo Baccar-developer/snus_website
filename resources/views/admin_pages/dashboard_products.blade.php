@@ -29,11 +29,7 @@ Dashboard
 
 <script>
 	$(document).ready(function(){
-		$(".confirm").click(function(){
-			$(".modal").show();
-			$("form #id").attr( 'value',Number($(this).parent().attr("product_id")))  ;
-			
-		});
+		
 		$(".modal-footer .btn-secondary").click(function(){
 			$(".modal").hide();
 		});
@@ -139,7 +135,14 @@ Dashboard
 		</th>
 		<th><label class="form-label">{{$row["created_at"]}}</label></th>
 		<th id='{{$row["product_id"]}}'> <button type="submit" class="btn btn-danger m-2" >modify</button> 
-		<button type="button" class="btn btn-danger m-2 confirm" >delete</button></th>
+		<button type="button" class="btn btn-danger m-2 " id="delete_{{$row->product_id}}" >delete</button></th>
+		<script>
+		$("#delete_{{$row->product_id}}").click(function(){
+			$(".modal").show();
+			$("form #id").attr( 'value',Number({{$row->product_id}})) ;
+			
+		});
+		</script>
 	</form>
 	</tr>
 

@@ -20,7 +20,7 @@ active
 		<label class="text-danger control-label me-auto">password</label>
 			<input type='password' placeholder="enter your password" class="form-control py-2 mb-3" name="password" value="{{old('password')}}">
 			<div class="d-flex">
-        		<a class="fs-6 text-danger">forgot password?</a> 
+        		<a class="fs-6 text-danger" href='{{url("/restore_account")}}'>forgot password?</a> 
         		<p class="text-danger ms-auto"><input type="checkbox" class="form-check-input" name="remember"> remeber me</p></div>
     		<br>
     		<button type="submit" class="btn btn-danger fs-3 rounded-5 px-4">Login</button>

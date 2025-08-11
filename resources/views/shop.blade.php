@@ -18,9 +18,11 @@ active
 			<h5>{{$best->product_desc}}</h5>
 		    <ul>
 				<li>price : {{$best["price_per_DT"]}}DT</li>
+				@if($best->ratings !=0)
 				<li>rating : 
 					@include("includes.rate",["rate"=>$best->product_rate])
 				</li>
+				@endif
 				<li> <a class="btn btn-danger rounded-4 px-3 py-2 m-2" href="{{route('add_to_cart' ,$best->product_id)}}">Add to cart </a></li>
 				<li> <a class="btn btn-danger rounded-4 px-3 py-2 m-2" href="{{route('product_reviews' , $best->product_id)}}">All reviews </a></li>
 			</ul>
@@ -43,9 +45,11 @@ active
 			<h5>{{$row->product_desc}}</h5>
 		    <ul>
 				<li>price : {{$row["price_per_DT"]}}DT</li>
+				@if($row->ratings !=0)
 				<li>rating : 
 				@include('includes.rate' ,['rate'=>$row["product_rate"]])
 				</li>
+				@endif
 				<li> <a class="btn btn-danger rounded-4 px-3 py-2 m-2" href="{{route('add_to_cart' ,$row->product_id)}}">Add to cart </a></li>
 				<li> <a class="btn btn-danger rounded-4 px-3 py-2 m-2" href="{{route('product_reviews' , $row->product_id)}}">All reviews </a></li>
 			</ul>

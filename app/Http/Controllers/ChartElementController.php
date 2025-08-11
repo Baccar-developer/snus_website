@@ -48,8 +48,7 @@ class ChartElementController extends Controller
         
         $cng=chart_elements::insert(["product_id"=> $product_id , "chart_id" => $cart->chart_id , "qnt"=>1]);
         if ($cng){
-            $product = products::where("product_id" , $product_id);
-            $product->update(["wished_qnt" =>$product->first()->wished_qnt +1]);
+            products::where("product_id" , $product_id)->increment("wished_qnt" ,1);
             return back()->with("msg" , "prosuct added to cart");
         }
         else{

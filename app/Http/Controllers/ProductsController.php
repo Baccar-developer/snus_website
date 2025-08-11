@@ -118,6 +118,12 @@ class ProductsController extends Controller
 
     public function destroy(Request $request)
     {
-        //
+        $cng =products::where("product_id" ,$request->id)->delete();
+        if($cng){
+            return back()->with("msg" , "deleion done with success!");
+        }
+        else{
+            return back()->withErrors("failed to delete ☹️");
+        }
     }
 }

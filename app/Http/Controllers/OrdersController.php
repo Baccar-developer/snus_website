@@ -8,8 +8,12 @@ use App\Models\charts;
 use App\Models\products;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use function GuzzleHttp\json_encode;
 
+use App\Mail\facture;
+use App\Mail\delivered_mail;
+use App\Mail\payed;
 
 class OrdersController extends Controller
 {
@@ -21,16 +25,21 @@ class OrdersController extends Controller
         $data = orders::where(["orders.payed"=>false ,"order_status"=> "delivered"])->orWhere("order_status" , "unfulfilled")
         ->leftJoin("charts" , "charts.chart_id" ,"=" ,"orders.chart_id")
         ->leftJoin("users" ,"users.id" ,"=" ,"charts.customer_id")
+        ->select("orders.created_at" , "location" ,"order_id" , "orders.chart_id" ,"price_per_DT" ,
+            "order_status" ,"orders.payed" ,"tel" ,"delivered_at" ,"customer_name" ,"avatar")
         ->orderBy("orders.created_at", "desc")
         
         ->paginate(10);
-        return view('admin_pages.dashboard_orders' )->with(["data"=>$data]);
+        return view('admin_pages.dashboard_orders', compact("data") );
     }
     
     
     public function filter(Request $request){
         $data = orders::leftJoin("charts" , "charts.chart_id" ,"=" ,"orders.chart_id")
-        ->leftJoin("users" ,"users.id" ,"=" ,"charts.customer_id");
+        ->leftJoin("users" ,"users.id" ,"=" ,"charts.customer_id")
+        ->where("customer_name" ,"LIKE" ,$request->name."%");
+        
+        
         
         if($request->delivered =="true"){
             $data= $data->where("order_status","delivered");
@@ -49,8 +58,11 @@ class OrdersController extends Controller
         if($request->price_order){$price_order = "desc";}
         $data = $data->orderBy("orders.created_at" ,$date_order)->orderBy("orders.price_per_DT",$price_order)->orderBy("orders.payed" ,"asc");
         if(! $data->first()){ return "<div class='container-fluid f-3 text-center'>no result</div>";}
-        
-        return view("includes.orders" )->with("data" ,$data->paginate(10));
+        $data = $data
+        ->select("orders.created_at" , "location" ,"order_id" , "orders.chart_id" ,"price_per_DT" ,
+            "order_status" ,"orders.payed" ,"tel" ,"delivered_at" ,"customer_name" ,"avatar")
+        ->paginate(10);
+        return view("includes.orders" ,compact("data"));
     }
 
     public function previous_orders(){
@@ -84,7 +96,7 @@ class OrdersController extends Controller
         $request->validate(["location"=>"required"]);
         $chart_elements = chart_elements::where("chart_id" , $request->chart_id)
         ->leftJoin("products as p" ,"p.product_id" ,"=" ,"chart_elements.product_id")
-        ->get(["chart_elements.product_id" ,"qnt"]);
+        ->get(["chart_elements.product_id" ,"qnt" , "price_per_DT" ,"product_name"]);
         
         
         foreach ($chart_elements as $c){
@@ -99,6 +111,11 @@ class OrdersController extends Controller
         
         $chng = orders::insert(["chart_id" =>$request->chart_id , "price_per_DT"=>$request->price_per_DT ,'location'=>$request->location,"payed"=>$payed]);
         if($chng){
+            
+            if(Auth::user()->email){
+                Mail::to(Auth::user()->email)->sendNow(new facture($chart_elements, $request->price_per_DT));
+            }
+            
             foreach ($chart_elements as $c) {
                 $product=products::where("product_id" , $c->product_id)->first();
                 products::where("product_id" , $c->product_id)->update(["ordered_qnt" => $product->ordered_qnt+$c->qnt, "wished_qnt"=>$product->wished_qnt-$c->qn]);
@@ -144,8 +161,21 @@ class OrdersController extends Controller
      */
     public function payed(Request $request)
     {
-        $cng = orders::where("order_id" , $request->order_id)->update(["payed" => 1]);
-        if($cng){return back()->with("msg" ,"update is done with success");}
+        $order =orders::where("order_id" , $request->order_id);
+        $cng = $order->update(["payed" => 1]);
+        if($cng){
+            $chart_elements =chart_elements::where("chart_id" , $order->first()->chart_id)->get(["product_id" ,"qnt"]);
+            foreach ($chart_elements as $c){
+                $product = products::where("product_id" ,$c->product_id);
+                $product->increment("gains_per_DT" , $c->qnt *$p->price_per_DT);
+            }
+            $email = $order->leftJoin("charts" ,"charts.chart_id" ,"=" ,"orders.chart_id")
+            ->leftJoin("users" ,"users.id" , '=' ,"charts.customer_id")->first()->email;
+            if($email){
+                Mail::to($email)->sendNow(new payed($order->created_at));
+            }
+            return back()->with("msg" ,"update is done with success");
+        }
         else{ return back()->withErrors("some server errors");}
     }
 
@@ -154,7 +184,27 @@ class OrdersController extends Controller
      */
     public function check(Request $request){
         $order = orders::where("order_id" ,$request->order_id);
-        $order->update(["order_status"=>"delivered" , "payed"=>$request->payed , "delivered_at" =>date('Y-m-d H:i:s')]);
+        $payed =false;
+        if($request->payed=='on'){$payed = true;}
+        $order->update(["order_status"=>"delivered" , "payed"=>$payed , "delivered_at" =>date('Y-m-d H:i:s')]);
+
+        $chart_elements =chart_elements::where("chart_id" , $order->first()->chart_id)->get(["product_id" ,"qnt"]);
+        foreach ($chart_elements as $c){
+            $product = products::where("product_id" ,$c->product_id);
+            $p = $product->first();
+            if($payed){ 
+                $product->increment("gains_per_DT" , $c->qnt *$p->price_per_DT);
+            }
+            
+            $product->decrement("full_qnt" , $c->qnt);
+            $product->decrement("ordered_qnt" , $c->qnt);
+            $product->increment("sold_qnt" , $c->qnt);
+        }
+        $email = $order->leftJoin("charts" ,"charts.chart_id" ,"=" ,"orders.chart_id")
+        ->leftJoin("users" ,"users.id" , '=' ,"charts.customer_id")->first()->email;
+        if($email){
+            Mail::to($email)->sendNow(new delivered_mail($payed));
+        }
         return back()->with("msg" , "order is checked");
     }
     

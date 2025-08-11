@@ -6,6 +6,9 @@ use App\Models\products;
 <table class="table table-dark table-striped fs-5">
 <tr>
 <th>id</th>
+
+<th>user name</th>
+<th>user avatar</th>
 <th>products</th>
 <th>ordered at</th>
 <th>time after ordering</th>
@@ -21,6 +24,8 @@ use App\Models\products;
 @foreach($data as $row)
 <tr>
     <th><label class='form-label'>{{$row['order_id']}}</label><input name='id' type='number' value= {{$row["order_id"]}}></th>
+    <th><label class="form-label">{{$row->customer_name}}</label></th>
+    <th>@include("includes.avatar" ,["radius"=>"50px" , "avatar"=>$row->avatar])</th>
     <th>
     	<label class='form-label d-flex align-items-end' id="dropdown_bnt_{{$row->order_id}}" toggled="false"> products <i class="fa-solid fa-caret-down"></i></label>
     	<div class="table table-dark table-striped" id="drop_down_{{$row->order_id}}">
@@ -54,7 +59,7 @@ use App\Models\products;
     <?php 
         $order_date = $row['created_at'];
         $date = new DateTime('now');
-        $diff = $date->diff($order_date);
+        $diff = $date->diff(new DateTime($order_date));
     ?>
     <th><label class='form-label'>{{$order_date}}</label></th>
     <th>
@@ -76,7 +81,7 @@ use App\Models\products;
     	else{echo "light-emphasis";}
     ?>
     '>{{$order_status}}</label></th>
-    <th>{{$row['created_at']}}</th>
+    <th>{{$row['delivered_at']}}</th>
     <th>{{$row['tel']}}</th>
     <th>
     @if($row["payed"])

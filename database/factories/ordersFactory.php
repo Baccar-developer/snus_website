@@ -30,7 +30,7 @@ class ordersFactory extends Factory
                 "chart_id"=> $chart_id,
                 "location"=> fake()->address(),
                 "order_status" =>fake()->randomElement(['delivered' ,'canceled' ,'unfulfilled']),
-                "delivered_at"=>fake()->dateTimeBetween("-1 months" , "now"),
+                "delivered_at"=>fake()->dateTime("-1 months" , "now"),
                 "price_per_DT"=>$price,
                 "payed"=> fake()->boolean()
         ];

@@ -9,17 +9,17 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class emailValidationMailer extends Mailable
+class facture extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $code;
-    /**
-     * Create a new message instance.
-     */
-    public function __construct(String $code)
+    private $cart_elements;
+    private $full_price;
+    public function __construct($cart_elements ,$full_price)
     {
-        $this->code = $code;
+        $this->cart_elements =$cart_elements;
+        $this->full_price = $full_price;
+        //
     }
 
     /**
@@ -28,7 +28,7 @@ class emailValidationMailer extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'verification code',
+            subject: 'order sent is succeded!',
         );
     }
 
@@ -38,8 +38,8 @@ class emailValidationMailer extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'verification.email_code',
-            with: ['code'=>$this->code]
+            view: 'auth.order_succeded',
+            with: ["cart_elements" =>$this->cart_elements , "full_price"=>$this->full_price]
         );
     }
 

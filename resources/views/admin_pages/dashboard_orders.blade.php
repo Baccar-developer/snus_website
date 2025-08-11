@@ -48,7 +48,6 @@ orders dashboard
       <input name="order_id" type="hidden" id="id2">
       @csrf
       @method("patch")
-      <input type="hidden" name="order_id" id='id'>
         <button type="submit" class="btn btn-danger">check</button>
         
         <button type="button" class="btn btn-secondary" data-dismiss=".modal[tabindex='2']">Close</button>
@@ -68,6 +67,7 @@ orders dashboard
 
 <!-- ---filter inputs-------- -->
 <div id="filter-bar" class="container-fluid d-flex align-items-center justify-content-center">
+	<label>user name</label><input class="form-control" type="text" id="name" placeholder="search by name" style="width:200px !important">
 	<label>order status</label>
 	<ul style="list-style :none; text-align:end">
 		<li><label class="text-success">delivered</label> <input class="form-check-input" type="radio" id="delivererd" name="status"></li>
@@ -81,6 +81,7 @@ orders dashboard
 <script>
 	function filter(){
 		dat={
+			name : $("#name").val(),
 			delivered : $("#delivererd").prop("checked"),
 			unfulfilled : $("#unfulfilled").prop("checked"),
 			canceled : $("#canceled").prop("checked"),
@@ -113,6 +114,8 @@ orders dashboard
 @section('content')
 <tr>
 <th>id</th>
+<th>user name</th>
+<th>user avatar</th>
 <th>products</th>
 <th>ordered at</th>
 <th>time after ordering</th>
@@ -128,6 +131,8 @@ orders dashboard
 @foreach($data as $row)
 <tr>
     <th><label class='form-label'>{{$row['order_id']}}</label><input name='id' type='number' value= {{$row["order_id"]}}></th>
+    <th><label class="form-label">{{$row->customer_name}}</label></th>
+    <th>@include("includes.avatar" ,["radius"=>"50px" , "avatar"=>$row->avatar])</th>
     <th>
     	<label class='form-label d-flex align-items-end' id="dropdown_bnt_{{$row->order_id}}" toggled="false"> products <i class="fa-solid fa-caret-down"></i></label>
     	<div class="table table-dark table-striped" id="drop_down_{{$row->order_id}}">
@@ -161,7 +166,7 @@ orders dashboard
     <?php 
         $order_date = $row['created_at'];
         $date = new DateTime('now');
-        $diff = $date->diff($order_date);
+        $diff = $date->diff(new DateTime($order_date));
     ?>
     <th><label class='form-label'>{{$order_date}}</label></th>
     <th>
@@ -183,7 +188,7 @@ orders dashboard
     	else{echo "light-emphasis";}
     ?>
     '>{{$order_status}}</label></th>
-    <th>{{$row['created_at']}}</th>
+    <th>{{$row['delivered_at']}}</th>
     <th>{{$row['tel']}}</th>
     <th>
     @if($row["payed"])

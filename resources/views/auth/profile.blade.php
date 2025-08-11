@@ -51,8 +51,9 @@ Dashboard
                       <span aria-hidden="true">&times;</span>
                     </button>
                   </div>
-                  <form method='patch' action='{{route("change_avatar")}}' enctype="multipart/form-data">
+                  <form method='post' action='{{route("change_avatar")}}' enctype="multipart/form-data">
                   
+                  @method('PATCH')
                   @csrf
                   <div class="modal-body">
                     <label class="form-label fs-3">select image here:</label>
@@ -82,16 +83,12 @@ Dashboard
 		
 		<p class="fs-3">validation gates</p>
 		<h4>tel°: {{Auth::user()->tel}}</h4>
-		<h4>email:
-		@if(Auth::user()->email)
-		<label>{{Auth::user()->email}}</label>
-		<a class="text-danger fs-6 btn" href='{{route("change_email_form")}}'>do you want to change email?</a>
+		<h4>email:</h4>
+		@if(isset(Auth::user()->email))
+		<h4>{{Auth::user()->email}}</h4>
 		@else
-		<label class="text-secondary">NULL</label>
-		<br>
-		<a class="text-danger fs-6 btn" href='{{route("change_email_form")}}'>do you want to add email?</a>
+			<a class="text-danger btn" href="{{route('change_email_form')}}">add email from your own</a>
 		@endif
-		</h4>
 		<hr>
 		<h2>Last ORDER</h2>
 		<div class="p-5 rounded-2 mb-5" style="background-color:var(--bs-gray-800)">
@@ -122,7 +119,7 @@ Dashboard
 			</table>
 			
 			<h4> full price: {{$last_order->price_per_DT}}DTN</h4>
-		@else
+			@else
 			
 			<h3 class="text-secondary">you didn't order any thing yet</h3>
 			

@@ -4,7 +4,7 @@ email
 @endsection
 
 @section("content")
-	<div class="container text-center form-container p-5">
+	<div class="container text-center form-container p-5 align-items-center">
 		<h1 class="text-danger">enter email</h1>
 		<h3 class='text-light'>enter your email so we can send you a verification code</h3>
 		<br>

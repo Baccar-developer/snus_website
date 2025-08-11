@@ -8,17 +8,18 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <title>@yield('title')</title>
 </head>
-<body class="d-grid bg-dark" style="align-items:center ;height:100vh">
+<body class="d-grid bg-dark">
+	
 	@if($errors->any())
-	<ul>
-	@foreach($erros as $error)
-		<li class="alert alert-danger px-3 fs-3">{{error}}</li>
+	<ul class="alert alert-danger px-3 fs-">
+	@foreach($errors->all() as $error)
+		<li>{{$error}}</li>
 		
 	@endforeach
 	</ul>
 	@endif
-
+	<div class="for-fill d-flex align-items-center">
 	@yield('content')
-
+	</div>
 	</body>
 </html>

@@ -15,7 +15,7 @@ active
     	<div class="col-4 ps-5 pt-5">
     		<h1>eshop for nicotine pipet</h1>
     		<h2>only destributer in Sousse</h2><h2> write something here</h2>
-    		<button class="btn btn-danger fs-4 rounded-5 m-4 p-3">buy from here!</button>
+    		<a href="{{url('/shop')}}"><button class="btn btn-danger fs-4 rounded-5 m-4 p-3">buy from here!</button></a>
     	</div>
     	<div class="col-8 text-center">
     		<h2>put a better image</h2>

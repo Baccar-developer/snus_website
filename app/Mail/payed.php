@@ -9,17 +9,15 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class emailValidationMailer extends Mailable
+class payed extends Mailable
 {
     use Queueable, SerializesModels;
-
-    public $code;
-    /**
-     * Create a new message instance.
-     */
-    public function __construct(String $code)
+    
+    private $ordered_at;
+    
+    public function __construct($ordered_at)
     {
-        $this->code = $code;
+        $this->ordered_at = $ordered_at;
     }
 
     /**
@@ -28,7 +26,7 @@ class emailValidationMailer extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'verification code',
+            subject: 'Payed',
         );
     }
 
@@ -38,8 +36,8 @@ class emailValidationMailer extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'verification.email_code',
-            with: ['code'=>$this->code]
+            view: 'admin_pages.payed',
+            with :["ordered_at" =>$this->ordered_at]
         );
     }
 

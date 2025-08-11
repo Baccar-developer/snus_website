@@ -18,6 +18,14 @@
 	padding-left :100px !important;
 }
 
+.alert
+{
+	margin:0 ;
+    top:0;
+    border-radius:0;
+}
+
+
 img{
 	object-fit :cover;
 }
