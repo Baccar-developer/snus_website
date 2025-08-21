@@ -4,6 +4,7 @@
 				<div class="col-6"><img src="{{asset('storage/product_img/'.$r->product_image)}}" height=200px width=200px ></div>
 				<div class="col-6 ">
 					<h2>{{$r->product_name}}</h2>
+					<h5 style="height:100px">{{$r->product_desc}}</h5>
 					<h3>rate: @include('includes.rate' ,['rate'=>$r->product_rate])</h3>
 					<a class="btn btn-danger rounded-4 px-3 py-2 m-2" href="{{route('add_to_cart' ,$r->product_id)}}">Add to cart </a>
 					 <a class="btn btn-danger rounded-4 px-3 py-2 m-2" href="{{route('product_reviews' , $r->product_id)}}">All reviews </a>

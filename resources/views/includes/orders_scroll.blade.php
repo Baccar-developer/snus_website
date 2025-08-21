@@ -21,22 +21,9 @@ switch ($order->order_status){
 				@else
 				<h3 class="text-danger">not payed</h3>
 				@endif
-				<?php 
-				    
-				    $chart_elements =chart_elements::where("chart_id" ,$order->chart_id);
-				    $chart_elements= $chart_elements->LeftJoin("products as p" , "p.product_id" ,"=" , "chart_elements.product_id")->paginate(10);
-				?>
-    			<table class="table table-striped table-dark">
-    				<tr>
-    					<td>product name</td><td>quantity</td><td>product price</td><td>product image</td>
-    				</tr>
-    				@foreach($chart_elements as $p)
-    				<tr>
-    					<td>{{$p->product_name}}</td><td>{{$p->qnt}}</td><td>{{$p->price_per_DT}}DTN</td><td><img height='100px' src="{{asset('storage/product_img/'.$p->product_image)}}"></td>
-    				</tr>
-    				@endforeach
-    			</table>
-				{{$chart_elements->links()}}
+				
+    			@include('includes.order_list' ,["chart_id"=>$order->chart_id])
+				
 				@if($order->order_status =='unfulfilled')
 				<button type="button" class="btn btn-danger" id="cancel_button_{{$order->order_id}}" target_order={{$order->order_id}}>cancel</button>
 				<script>

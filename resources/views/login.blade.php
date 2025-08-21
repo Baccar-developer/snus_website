@@ -18,8 +18,11 @@ active
 		<label class="text-danger control-label me-auto">email or tel</label>
 			<input type='text' placeholder="enter your email or tel°N" class="form-control py-2 mb-3" name="email_or_tel" value="{{old('email_or_tel')}}">
 		<label class="text-danger control-label me-auto">password</label>
+		<div class="d-flex align-items-center">
 			<input type='password' placeholder="enter your password" class="form-control py-2 mb-3" name="password" value="{{old('password')}}">
-			<div class="d-flex">
+			<i class="fa-regular fa-eye"></i>
+		</div>
+			<div class="d-flex align-items-center">
         		<a class="fs-6 text-danger" href='{{url("/restore_account")}}'>forgot password?</a> 
         		<p class="text-danger ms-auto"><input type="checkbox" class="form-check-input" name="remember"> remeber me</p></div>
     		<br>
@@ -28,4 +31,12 @@ active
     		<a class="fs-6 text-danger" href='{{url("/signup")}}'>don't have account?</a> 
     	</div>
 	</div>
+	<script>
+		$('i').mousedown(function(){
+			$(this).parent().children("input").attr("type" ,"text");
+		});
+		$('i').mouseup(function(){
+			$(this).parent().children("input").attr("type" ,"password");
+		});
+	</script>
 @endsection

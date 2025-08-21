@@ -23,10 +23,8 @@ class productsFactory extends Factory
             'price_per_DT'=>$price,
             'full_qnt'=>$full_qnt,
             'ordered_qnt' =>fake()->biasedNumberBetween(0 ,$full_qnt),
-            'sold_qnt'=>fake()->biasedNumberBetween( 1,8),
-            'gains_per_DT'=> fake()->biasedNumberBetween( 1,8) *$price,
-            'rate'=>fake()->randomFloat(3,0,5),
-            'ratings'=>fake()->biasedNumberBetween( 2,10),
+            "product_rate"=>0,
+            "ratings"=>0,
             "wished_qnt"=> fake()->biasedNumberBetween(0 ,20)
         ];
     }

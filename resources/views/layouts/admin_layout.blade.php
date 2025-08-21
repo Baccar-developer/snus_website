@@ -7,12 +7,13 @@
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 	@vite('resources/css/app.css')
 	@vite('resources/js/app.js')
+	
+	<link rel="icon" href="{{asset('favicon.svg')}}">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <title>@yield('title')</title>
 </head>
 <body class='bg-dark text-light'>
 
-<div class='container-fluid'>
 @if(session()->has('msg'))
 
 <p class="alert alert-success fs-5">{{session()->get('msg')}}</p>
@@ -26,11 +27,10 @@
 </ul>
 @endif
 
-</div>
-
 <div class="conteiner-fluid p-4 text-center">
 	<p class="fs-4"> current_Admin : {{Auth::guard('admin')->user()->name}}</p>
-	<a href='{{route("dashboard")}}'><button type="button" class='btn btn-danger'> Products</button></a>
+	<a href='{{route("dashboard")}}'><button type="button" class='btn btn-danger'> Main</button></a>
+	<a href='{{route("products_dashboard")}}'><button type="button" class='btn btn-danger'> Products</button></a>
 	<a href='{{route("orders_dashboard")}}'><button  type="button" class='btn btn-danger'> Orders</button></a>
 	<a href='{{route("disconnect_admin")}}'><button type="button" class='btn btn-danger'> log out</button></a>
 </div>

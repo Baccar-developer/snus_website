@@ -2,6 +2,8 @@
 use Carbon\Traits\Date;
 use App\Models\chart_elements;
 use App\Models\products;
+
+date_default_timezone_set("Africa/Tunis");
 ?>
 @extends("layouts.admin_layout")
 
@@ -66,48 +68,24 @@ orders dashboard
 </script>
 
 <!-- ---filter inputs-------- -->
-<div id="filter-bar" class="container-fluid d-flex align-items-center justify-content-center">
-	<label>user name</label><input class="form-control" type="text" id="name" placeholder="search by name" style="width:200px !important">
+<form id="filter-bar" class="container-fluid d-flex align-items-center justify-content-center" method="get" action ="{{url('/admin/orders/filter')}}">
+	<label>user name</label><input class="form-control" type="text" name="name" placeholder="search by name" style="width:200px !important" value="{{request('name')}}">
 	<label>order status</label>
 	<ul style="list-style :none; text-align:end">
-		<li><label class="text-success">delivered</label> <input class="form-check-input" type="radio" id="delivererd" name="status"></li>
-		<li><label class="text-warning">unfulfiled</label> <input class="form-check-input" type="radio" id="unfulfilled" name="status"></li>
-		<li><label class="text-secondary">canceled</label> <input class="form-check-input" type="radio" id="canceled" name="status"></li>
+		<li class="d-flex"><label class="text-success">delivered</label> <input class="form-check-input" type="radio" value="delivered" name="status" 
+		 @if(request('status') =="delivered") checked @endif></li>
+		<li  class="d-flex"><label class="text-warning">unfulfiled</label> <input class="form-check-input" type="radio" value="unfulfilled" name="status"
+		 @if(request('status') =="unfulfilled") checked @endif></li>
+		<li  class="d-flex"><label class="text-secondary">canceled</label> <input class="form-check-input" type="radio" value="canceled" name="status"
+		 @if(request('status') =="canceled") checked @endif></li>
 	</ul>
-	<label class="ms-3 me-1"> order by order date:</label>ascend @include("includes.switch_box" ,["name"=>"date-order"])descend
-	<label class="ms-3 me-1"> order by price:</label>ascend @include("includes.switch_box" ,["name"=>"price-order"])descend
-</div>
+	<label class="ms-3 me-1"> order by order date:</label>ascend 
+	@include("includes.switch_box" ,["name"=>"date_order" ,"checked"=>request("date_order")]) descend
+	<label class="ms-3 me-1"> order by price:</label>ascend 
+	@include("includes.switch_box" ,["name"=>"price_order", "checked"=>request("date_order")]) descend
+	<button class="btn btn-danger ms-3" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+</form>
 
-<script>
-	function filter(){
-		dat={
-			name : $("#name").val(),
-			delivered : $("#delivererd").prop("checked"),
-			unfulfilled : $("#unfulfilled").prop("checked"),
-			canceled : $("#canceled").prop("checked"),
-			date_order: $(".switch_button.date-order input").attr("value"),
-			price_order: $(".switch_button.price-order input").attr("value"),
-			_token :'{{csrf_token()}}'
-			
-		};
-		$.ajax({
-			url : "{{url('/admin/orders/filter')}}",
-			method:'post',
-			data :dat,
-			success: function(data){ $("#filter").html(data)},
-			error: function(xhr, ajaxOptions, thrownErro){ $("#filter").html( '<div class="container-fluid text-center fs-3">'+thrownErro+ '</div>')},
-			dataType:'html'
-		});
-	}
-
-	$("#filter-bar input").change(function(){
-		filter()
-	})
-	
-	$('.switch_button').click(function(){
-		setTimeout(filter , 100);
-	})
-</script>
 
 @endsection
 
@@ -135,7 +113,7 @@ orders dashboard
     <th>@include("includes.avatar" ,["radius"=>"50px" , "avatar"=>$row->avatar])</th>
     <th>
     	<label class='form-label d-flex align-items-end' id="dropdown_bnt_{{$row->order_id}}" toggled="false"> products <i class="fa-solid fa-caret-down"></i></label>
-    	<div class="table table-dark table-striped" id="drop_down_{{$row->order_id}}">
+    	<div id="drop_down_{{$row->order_id}}" style="overflow-y :hidden;height:0">
     		<?php 
     		$chart_elements = chart_elements::where("chart_id" ,$row->chart_id)
     		->leftJoin("products","products.product_id" ,"=" ,"chart_elements.product_id")
@@ -143,7 +121,7 @@ orders dashboard
     		$height =0;
     		?>
     		@foreach($chart_elements as $c)
-    		<div class="d-grid" style="height:0; grid-template-columns:1fr 1fr">
+    		<div class="d-grid" style=" grid-template-columns:1fr 1fr">
     			<h5>{{$c->product_name}}</h5> <h5>{{$c->qnt}}</h5>
     			<?php $height += 40?>
     		</div>
@@ -165,17 +143,22 @@ orders dashboard
     </th>
     <?php 
         $order_date = $row['created_at'];
-        $date = new DateTime('now');
-        $diff = $date->diff(new DateTime($order_date));
+        $o = new DateTime($order_date);
+        $date = new DateTime("now");
+        $diff = date_diff($o ,$date );
     ?>
     <th><label class='form-label'>{{$order_date}}</label></th>
     <th>
     <label class='form-label'>
-    <?php
+    <?php 
+    
     if($diff->y !=0){echo $diff->y." Years";}
     else if($diff->m !=0){echo $diff->m." Months";}
     else if($diff->d !=0){echo $diff->d." Days";}
-    else {echo $diff->h." Hours ".$diff->i." minuts";}
+    else {
+        if ($diff->h !=0){echo $diff->h." Hours ";}
+        echo $diff->i." minuts";
+    }
     ?>
     </label>
     </th>
@@ -234,5 +217,5 @@ orders dashboard
 @endsection
 
 @section('pagination')
-{{$data->links()}}
+{{$data->withQueryString()->links()}}
 @endsection

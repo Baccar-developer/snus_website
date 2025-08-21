@@ -16,7 +16,7 @@ class chartsFactory extends Factory
      */
     public function definition(): array
     {
-        $created_at = fake()->dateTimeBetween("-1 months" , "now");
+        $created_at = fake()->dateTimeThisYear();
         return [
             "customer_id"=>fake()->randomElement(User::pluck("id")),
             "created_at"=>$created_at,

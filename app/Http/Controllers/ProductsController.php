@@ -9,6 +9,7 @@ use App\Http\Requests\ProductRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use function GuzzleHttp\json_encode;
 
 
 class ProductsController extends Controller
@@ -19,7 +20,7 @@ class ProductsController extends Controller
     public function index()
     {
         $data = products::orderBy("created_at" ,"desc")->paginate(10);
-        return view('admin_pages.dashboard_products' )->with(['product_name'=> Auth::guard('admin')->user()->product_name , "data"=>$data]);
+        return view('admin_pages.dashboard_products' )->with(["data"=>$data]);
     }
 
     /**
@@ -50,7 +51,7 @@ class ProductsController extends Controller
             $product['product_image'] = $new_product_name;
         }
        products::insert($product);
-       return redirect()->route("dashboard")->with(["msg"=>"insertion is done with success"]);
+       return redirect()->route("products_dashboard")->with(["msg"=>"insertion is done with success"]);
     }
     
     
@@ -61,12 +62,14 @@ class ProductsController extends Controller
         if(!$request->date_order){$date_ord="asc";}
         $data =products::where("product_name", "LIKE", $request->name."%")
         ->orderBy("created_at" , $date_ord)
-        ->orderBy("product_rate" , $rate_ord);
+        ->orderBy("product_rate" , $rate_ord)
+        ->paginate(10);
         
-        if($data->first()){$data = $data->paginate();}
-        else{return "";}
+        $data->appends(request()->query());
         
-        return view("includes.products")->with("data",$data);
+        
+       return  view('admin_pages.dashboard_products')->with(["data"=>$data]);
+        
     }
     /**
      * Display the specified resource.
@@ -83,10 +86,15 @@ class ProductsController extends Controller
     {
        
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
+    function description_modify(Request $request){
+        $product = products::where("product_id",$request->id);
+        $cng = $product->update(["product_desc" => $request->desc]);
+        if($cng){
+            return back()->with("msg" , "the description is modified");
+        }
+        return back()->withErrors("modification failed!");
+    }
+    
     public function update(ProductRequest $request)
     {
         $product = products::where("product_id" , $request->product_id)->first();
@@ -105,8 +113,8 @@ class ProductsController extends Controller
         $new =array_merge($new ,
             [
                 "product_name"=>$request->product_name,
-                "product_desc"=>$request->product_desc,
                 "full_qnt"=>$request->full_qnt,
+                "price_per_DT"=>$request->price_per_DT
             ]);
         products::where("product_id" ,$request->product_id)->update($new);
         return back()->with("msg","the updates are done with success");
@@ -118,7 +126,9 @@ class ProductsController extends Controller
 
     public function destroy(Request $request)
     {
-        $cng =products::where("product_id" ,$request->id)->delete();
+        $product =products::where("product_id" ,$request->id);
+        Storage::disk('public')->delete("product_img/".$product->first()->product_image);
+        $cng = $product->delete();
         if($cng){
             return back()->with("msg" , "deleion done with success!");
         }

@@ -37,7 +37,7 @@ class payed extends Mailable
     {
         return new Content(
             view: 'admin_pages.payed',
-            with :["ordered_at" =>$this->ordered_at]
+            with :["order_date" =>$this->ordered_at]
         );
     }
 

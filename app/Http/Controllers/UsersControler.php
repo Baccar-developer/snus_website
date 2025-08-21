@@ -8,9 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\SmsController;
 use App\Models\User;
 use App\Models\charts;
-use App\Models\orders;
 use App\Models\chart_elements;
-use App\Models\products;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +20,7 @@ use Illuminate\Validation\Rules\Password;
 
 use App\Mail\emailValidationMailer;
 use App\Mail\accountVerifMail;
+use Vtiful\Kernel\Chart;
 
 
 class UsersControler extends Controller
@@ -29,7 +28,7 @@ class UsersControler extends Controller
     public function tel_confirm(UsersRequest $request){
         $tel =str_replace(' ', '', $request->tel);
         if(User::where("tel" , $tel)->exists() ){
-            return back()->withErros(["num_exists" =>"this phone number is used already"]);
+            return redirect('/signup')->withErros(["num_exists" =>"this phone number is used already"]);
         }
         $password = Hash::make($request->password);
         $name = $request->name;
@@ -43,11 +42,13 @@ class UsersControler extends Controller
         if (!Hash::check($answer,$request->code)){
             return back()->withErrors( "wrong code");
         }
+        
         User::insert([
             "customer_name"=>$request->name,
             "tel"=>$request->tel,
             "password"=>$request->password,
         ]);
+        charts::insert(["customer_id"=>User::where("tel", $request->tel)->first()->id]);
         return redirect('/login')->with("msg" , "signup done with success");
         
     }
@@ -93,8 +94,9 @@ class UsersControler extends Controller
         if(!$last_order){
             return view("auth.profile");
         }
-        $purchases = chart_elements::where("chart_id" ,$last_order->chart_id)->leftJoin("products","products.product_id" ,'=' , "chart_elements.product_id")->orderBy("chart_elements.created_at" ,"desc")->get();
-        return view("auth.profile", compact('last_order' ,'purchases'));
+        
+       
+        return view("auth.profile", compact('last_order' ));
     }
     
     public function verif_email(Request $request){
@@ -119,7 +121,7 @@ class UsersControler extends Controller
     
     public function update_avatar(Request $request){
         $request->validate(
-               ["image"=>"required|min:10|max:960"]
+               ["image"=>"required|min:10|max:960|mimes:png,jpeg,webp"]
             );
         if(Auth::user()->avatar){
             Storage::disk("public")->delete("profile_img/".Auth::user()->avatar);
@@ -137,11 +139,12 @@ class UsersControler extends Controller
             charts::insert(["customer_id" => Auth::id()]);
         }
         $cart_elements = chart_elements::where("chart_id" , $cart->chart_id)
-        ->leftJoin("products as p" , "p.product_id" ,"=" ,"chart_elements.product_id")->paginate(10);
+        ->leftJoin("products as p" , "p.product_id" ,"=" ,"chart_elements.product_id");
         $price =0;
-        foreach($cart_elements as $p){
+        foreach($cart_elements->get() as $p){
             $price += $p->price_per_DT* $p->qnt;
         }
+        $cart_elements = $cart_elements->paginate(10);
         return view('auth.current_cart' ,compact("cart" , "cart_elements"))->with("price",$price);
     }
     

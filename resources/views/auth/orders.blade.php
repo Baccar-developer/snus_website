@@ -1,6 +1,4 @@
-<?php
-use App\Models\chart_elements;
-?>
+
 @extends("layouts.layout")
 @section('title')
 previous orders
@@ -31,7 +29,9 @@ previous orders
 	$("#no-btn").click(function(){$($(this).attr("data-dismiss")).hide()})
 </script>
 <!-- orders -->
+
 <div class="container p-5 for-fill" id="scrollable">
+<h3 class="text-secondary">prices may change with time</h3>
 <h1 class="text-danger"> your previous orders <i class="fa-solid fa-bag-shopping"></i></h1>
 	@if(!isset($orders[0]))
 		you didn't order any thing yet
@@ -57,21 +57,7 @@ previous orders
 				@else
 				<h3 class="text-danger">not payed</h3>
 				@endif
-				<?php 
-				    $chart_elements =chart_elements::where("chart_id" ,$order->chart_id);
-				    $chart_elements= $chart_elements->LeftJoin("products as p" , "p.product_id" ,"=" , "chart_elements.product_id")->paginate(10);
-				?>
-    			<table class="table table-striped table-dark">
-    				<tr>
-    					<td>product name</td><td>quantity</td><td>product price</td><td>product image</td>
-    				</tr>
-    				@foreach($chart_elements as $p)
-    				<tr>
-    					<td>{{$p->product_name}}</td><td>{{$p->qnt}}</td><td>{{$p->price_per_DT}}DTN</td><td><img height='100px' src="{{asset('storage/product_img/'.$p->product_image)}}"></td>
-    				</tr>
-    				@endforeach
-    			</table>
-				{{$chart_elements->links()}}
+				@include("includes.order_list" ,["chart_id"=> $order->chart_id])
 				
 				@if($order->order_status =='unfulfilled')
 				<button type="button" class="btn btn-danger" id="cancel_button_{{$order->order_id}}"  target_order={{$order->order_id}}>cancel</button>

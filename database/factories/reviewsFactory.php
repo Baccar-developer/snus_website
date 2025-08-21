@@ -17,8 +17,8 @@ class reviewsFactory extends Factory
     public function definition(): array
     {
         return [
-            "rate"=>rand(0,5),
-            "comment"=>fake()->realTextBetween(5 ,100)
+            "comment"=>fake()->realTextBetween(5 ,100),
+            "created_at"=> fake()->dateTimeThisYear()
         ];
     }
 }

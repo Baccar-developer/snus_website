@@ -1,6 +1,22 @@
-<div class="switch_button {{$name}}" chk="true">
+<div class="switch_button {{$name}}" 
+	@if(isset($checked)  )
+		@if($checked==1)
+		chk = "true"
+		@else
+		chk="false"
+		@endif
+	@else
+	chk="true"
+	@endif
+	
+	>
     <div class="ball"></div>
-    <input type="hidden" name='{{$name}}' value='1' >
+    <input type="hidden" name='{{$name}}' 
+    @if(isset($checked))
+    	value='{{$checked}}'
+    @else
+    value='1' 
+    @endif >
 </div>
 
 <style>

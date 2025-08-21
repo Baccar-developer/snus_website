@@ -10,14 +10,16 @@
 
 ?>
 <div class="container " id='scrollable'>
-    <div style="background-color: var(--bs-gray-800); " class="mb-5 p-4" >
-    	<div class="row">
-    		<div class="col-6"><img src="{{asset('storage/product_img/'.$product->product_image)}}" height=200px width=200px ></div>
-    		<div class="col-6 ">
+    <div style="background-color: var(--bs-gray-800); " class="mb-5 p-4 " >
+    	<div class="d-flex">
+    		<div><img src="{{asset('storage/product_img/'.$product->product_image)}}" style="height:30vw ;width:30vw" ></div>
+    		<div >
     			<h2>{{$product->product_name}}</h2>
-    			<h4> {{$product->product_desc}}</h4>
+    			<p class="fs-6" style='height:230px'> {{$product->product_desc}}</p>
     			<h3>rate: @include('includes.rate' ,['rate'=>$product->product_rate])</h3>
+    			@auth
     			<a class="btn btn-danger rounded-4 px-3 py-2 m-2" href="{{route('add_to_cart' ,$product->product_id)}}">Add to cart </a>
+    			@endauth
     		</div>
     	</div>
     </div>
@@ -29,7 +31,7 @@
 	   $user_review = reviews::where("product_id" , $product->product_id)->where("customer_id" , Auth::id())->first()
 	?>
 	@if(!isset($user_review))
-	<div class="container px-5 py-2" style="background-color:var(--bs-gray-800)">
+	<div class=" px-5 py-2" style="background-color:var(--bs-gray-800)">
 		<div class="d-flex align-items-center">@include('includes.avatar' ,['avatar'=>Auth::user()->avatar, 'radius'=>'50px'])<h3>{{Auth::user()->customer_name}}</h3></div>
 		<ul class="star_bar" target="#rate" display="#msg">
 			<li><i class="fa-regular fa-star" id="star-1"></i></li>
@@ -84,20 +86,23 @@
 	
 	@endauth
 
-	
+	@if(!$reviews->first())
+		<h1 class="m-5 text-center text-secondary">there is no reviews yet</h1>
+	@else
     @foreach($reviews as $r)
-    <div class="container p-5 my-4" style='background-color:var(--bs-gray-800)'>
-    	<div class="container d-flex mb-2 align-items-center ">
-			@include('includes.avatar',["radius"=>'50px' , 'avatar'=>$r->avatar]) 
-			<h5 class="m-1">{{$r->customer_name}}</h5>
-			<h5 class="m-1">@include('includes.rate' , ["rate" =>$r->rate])</h5>
-			<h5 class="ms-auto text-secondary">{{$r->created_at}}</h5>
+    <div class=" p-5 my-4" style='background-color:var(--bs-gray-800)'>
+    	<div class="row mb-2 align-items-center ">
+			<div class="col-12 col-xl-6 d-flex align-items-center">@include('includes.avatar',["radius"=>'50px' , 'avatar'=>$r->avatar])
+			<h5 class="p-1">{{$r->customer_name}}</h5>
+			</div> 
+			<h5 class="p-1 col-6 col-xl-3">@include('includes.rate' , ["rate" =>$r->rate])</h5>
+			<h5 class="ps-auto text-secondary col-6 col-xl-3">{{$r->created_at}}</h5>
 		</div>
 		<div class="container-fluid bg-dark p-4 fs-5 rounded-3">{{$r->comment}}</div>
 				
 	</div>
     @endforeach
-
+	@endif
 
 
 		<script>

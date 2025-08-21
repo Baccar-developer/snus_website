@@ -28,10 +28,13 @@ Route::get("/reset_password" ,[UsersControler::class , 'reset_password_form']);
 Route::put("/reset_password/reset" ,[UsersControler::class , 'reset_password'])->name("reset_password");
 
 Route::middleware([AdminMiddleware::class])->group(function(){
-    Route::get('/admin/products' ,[ProductsController::class ,'index']
-    )->name('dashboard');
     
-    Route::get("/admin/products/search" ,[ProductsController::class , "filter"]);
+    Route::get("/admin" ,[AdminsController::class , 'dashboard'])->name("dashboard");
+    
+    Route::get('/admin/products' ,[ProductsController::class ,'index']
+    )->name('products_dashboard');
+    
+    Route::get("/admin/products/filter" ,[ProductsController::class , "filter"]);
     Route::get('/admin/orders' ,[OrdersController::class ,'index']
     )->name('orders_dashboard');
     
@@ -47,9 +50,12 @@ Route::middleware([AdminMiddleware::class])->group(function(){
     Route::delete("/admin/orders/delete" , [OrdersController::class, "destroy"])->name('delete_order');
     Route::patch("/admin/orders/check" , [OrdersController::class, "check"])->name('check_order');
     
-    Route::post("/admin/orders/filter" ,[OrdersController::class ,"filter"]);
+    Route::get("/admin/orders/filter" ,[OrdersController::class ,"filter"]);
+    
     
     Route::patch("/admin/orders/is_payed" ,[OrdersController::class ,'payed'])->name("is_payed");
+    
+    Route::put("admin/products/modify_desc" ,[ProductsController::class ,'description_modify'])->name("desc_modify");
 });
 
 Route::middleware([GestMiddleware::class])->group(function(){
@@ -90,6 +96,8 @@ Route::post('/login/login_user' , [UsersControler::class , 'login'])->name("logi
 
 
 Route::middleware(AuthMiddleWare::class)->group(function(){
+    Route::get("/paginate_items" ,[ChartElementController::class ,'chart_elements_list']);
+    
     Route::get('/profile', [UsersControler::class , 'profile'])->name("profile");
     Route::patch('/profile/update_avatar' ,[UsersControler::class , 'update_avatar'] )->name("change_avatar");
     
@@ -105,6 +113,7 @@ Route::middleware(AuthMiddleWare::class)->group(function(){
     Route::post("profiel/cart/send_order" ,[OrdersController::class , "store"])->name("send_order");
     Route::patch("profile/orders/cancel_order", [OrdersController::class , "cancel"])->name('cancel_order');
     Route::get("profile/orders" , [OrdersController::class , 'previous_orders'])->name("user_orders");
+    
     
     Route::post("profile/orders/scroll" , [OrdersController::class , 'scroll']);
     

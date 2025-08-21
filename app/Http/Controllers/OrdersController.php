@@ -34,21 +34,20 @@ class OrdersController extends Controller
     }
     
     
-    public function filter(Request $request){
+    public function filter(Request $request ,int $page=0){
         $data = orders::leftJoin("charts" , "charts.chart_id" ,"=" ,"orders.chart_id")
         ->leftJoin("users" ,"users.id" ,"=" ,"charts.customer_id")
         ->where("customer_name" ,"LIKE" ,$request->name."%");
         
         
-        
-        if($request->delivered =="true"){
-            $data= $data->where("order_status","delivered");
+        if($request->status =="delivered"){
+            $data->where("order_status","delivered")->orderBy("orders.payed" ,"asc");
         }
-        else if($request->unfulfilled =="true"){
-            $data= $data->where("order_status","unfulfilled");
+        else if($request->status =="unfulfilled"){
+            $data->where("order_status","unfulfilled")->orderBy("orders.payed" ,"asc");
         }
-        else if($request->canceled ="true"){
-            $data= $data->where("order_status","canceled");
+        else if($request->status ="canceled"){
+            $data->where("order_status","canceled");
         }
         
         $date_order = "asc";
@@ -56,19 +55,25 @@ class OrdersController extends Controller
         
         if($request->date_order){$date_order = "desc";}
         if($request->price_order){$price_order = "desc";}
-        $data = $data->orderBy("orders.created_at" ,$date_order)->orderBy("orders.price_per_DT",$price_order)->orderBy("orders.payed" ,"asc");
-        if(! $data->first()){ return "<div class='container-fluid f-3 text-center'>no result</div>";}
+        $data->orderBy("orders.created_at" ,$date_order)->orderBy("orders.price_per_DT",$price_order);
         $data = $data
         ->select("orders.created_at" , "location" ,"order_id" , "orders.chart_id" ,"price_per_DT" ,
-            "order_status" ,"orders.payed" ,"tel" ,"delivered_at" ,"customer_name" ,"avatar")
-        ->paginate(10);
-        return view("includes.orders" ,compact("data"));
+            "order_status" ,"orders.payed" ,"tel" ,"delivered_at" ,"customer_name" ,"avatar");
+        
+        $parameters = ["status" =>$request->status , "date_order"=>$request->date_order ,"price_order"=>$request->price_order ,"name"=>$request->name];
+        $data=$data->paginate(10);
+        $data->append($request->query());
+        return view("admin_pages.dashboard_orders" ,compact("data"))->with($parameters);
+        
     }
 
     public function previous_orders(){
         $orders = orders::join("charts as c" ,'c.chart_id' ,'=' , 'orders.chart_id')->where("customer_id" ,Auth::id())
-        ->where(["payed" =>false ,"order_status"=>"delivered"])
-        ->orWhere("order_status","unfulfilled")
+        ->where(function($query){
+            $query->where(["payed" =>false ,"order_status"=>"delivered"])
+            ->orWhere("order_status" , "unfulfilled");
+        }
+        )
         ->orderBy("orders.created_at" ,"desc")->limit(2)
         ->get( ["orders.created_at" , "price_per_DT" , "order_status" ,'payed','orders.chart_id',"order_id" ,"location"]);
 
@@ -77,8 +82,10 @@ class OrdersController extends Controller
     
     public function scroll(Request $request){
         $orders = orders::join("charts as c" ,'c.chart_id' ,'=' , 'orders.chart_id')->where("customer_id" ,Auth::id())
-        ->where(["payed" =>false ,"order_status"=>"delivered"])
-        ->orWhere("order_status","unfulfilled")
+        ->where(function($query){
+            $query->where(["payed" =>false ,"order_status"=>"delivered"])
+            ->orWhere("order_status","unfulfilled");
+        })
         ->orderBy("orders.created_at" ,"desc")
         ->offset($request->start)->limit($request->step)
         ->get( ["orders.created_at" , "price_per_DT" , "order_status" ,'payed','orders.chart_id',"order_id" ]);
@@ -118,7 +125,7 @@ class OrdersController extends Controller
             
             foreach ($chart_elements as $c) {
                 $product=products::where("product_id" , $c->product_id)->first();
-                products::where("product_id" , $c->product_id)->update(["ordered_qnt" => $product->ordered_qnt+$c->qnt, "wished_qnt"=>$product->wished_qnt-$c->qn]);
+                products::where("product_id" , $c->product_id)->update(["ordered_qnt" => $product->ordered_qnt+$c->qnt, "wished_qnt"=>$product->wished_qnt-$c->qnt]);
             }
             charts::insert(["customer_id" => Auth::id()]);
             return back()->with("msg" , "the order is sent with success");
@@ -136,7 +143,8 @@ class OrdersController extends Controller
         $chart_elements= chart_elements::where("chart_id" , $order->chart_id)->get();
         foreach ($chart_elements as $c) {
             $product = products::where("product_id" , $c->product_id);
-            $new_qnt = $product->first()->ordered_qnt - $c->qnt;
+            $p = clone $product;
+            $new_qnt = $p->first()->ordered_qnt - $c->qnt;
             $product->update(["ordered_qnt"=>$new_qnt]);
         }
         
@@ -164,15 +172,11 @@ class OrdersController extends Controller
         $order =orders::where("order_id" , $request->order_id);
         $cng = $order->update(["payed" => 1]);
         if($cng){
-            $chart_elements =chart_elements::where("chart_id" , $order->first()->chart_id)->get(["product_id" ,"qnt"]);
-            foreach ($chart_elements as $c){
-                $product = products::where("product_id" ,$c->product_id);
-                $product->increment("gains_per_DT" , $c->qnt *$p->price_per_DT);
-            }
+            
             $email = $order->leftJoin("charts" ,"charts.chart_id" ,"=" ,"orders.chart_id")
             ->leftJoin("users" ,"users.id" , '=' ,"charts.customer_id")->first()->email;
             if($email){
-                Mail::to($email)->sendNow(new payed($order->created_at));
+                Mail::to($email)->sendNow(new payed($order->first()->created_at));
             }
             return back()->with("msg" ,"update is done with success");
         }
@@ -183,6 +187,8 @@ class OrdersController extends Controller
      * Remove the specified resource from storage.
      */
     public function check(Request $request){
+        
+        date_default_timezone_set("Africa/Tunis");
         $order = orders::where("order_id" ,$request->order_id);
         $payed =false;
         if($request->payed=='on'){$payed = true;}
@@ -191,14 +197,8 @@ class OrdersController extends Controller
         $chart_elements =chart_elements::where("chart_id" , $order->first()->chart_id)->get(["product_id" ,"qnt"]);
         foreach ($chart_elements as $c){
             $product = products::where("product_id" ,$c->product_id);
-            $p = $product->first();
-            if($payed){ 
-                $product->increment("gains_per_DT" , $c->qnt *$p->price_per_DT);
-            }
-            
             $product->decrement("full_qnt" , $c->qnt);
             $product->decrement("ordered_qnt" , $c->qnt);
-            $product->increment("sold_qnt" , $c->qnt);
         }
         $email = $order->leftJoin("charts" ,"charts.chart_id" ,"=" ,"orders.chart_id")
         ->leftJoin("users" ,"users.id" , '=' ,"charts.customer_id")->first()->email;

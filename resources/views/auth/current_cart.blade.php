@@ -50,10 +50,10 @@ current cart
 		$('#close_btn').click(function(){$($(this).attr('data-dismiss')).hide()});
 	});
 </script>
-<div class="container p-5 for-fill" >
+<div class="container-fluid  for-fill" >
 <h1 class="text-danger"> your cart <i class="fa-solid fa-cart-shopping"></i></h1>
 @if(!$cart_elements[0])
-	<div  style="background-color :var(--bs-gray-800); height:70vh ; display:flex ; align-items:center; justify-content:center">
+	<div  style="background-color :var(--bs-gray-800); height:70vh ; display:flex ; align-items:center; justify-content:center;padding:20px">
 		<h1>your cart is empty for now</h1>
 	</div>
 @else

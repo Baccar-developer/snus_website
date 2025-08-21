@@ -57,7 +57,7 @@ Dashboard
                   @csrf
                   <div class="modal-body">
                     <label class="form-label fs-3">select image here:</label>
-                     <input type="file" name="image" id='image_input' accept="image/pnj image/jpeg" class="form-control">
+                     <input type="file" name="image" id='image_input' accept="image/png, image/jpeg, image/webp" class="form-control">
                      <br><br>
                      @if(Auth::user()->avatar)
             			<img height='300px' width='300px' style='border-radius:50%' id="display" >
@@ -106,17 +106,7 @@ Dashboard
 			>{{$last_order->order_status}}</label></h4>
 			<h4>products:</h4>
 			
-
-			<table class="table table-striped table-dark">
-				<tr>
-					<td>product name</td><td>quantity</td><td>product price</td><td>product image</td>
-				</tr>
-				@foreach($purchases as $p)
-				<tr>
-					<td>{{$p->product_name}}</td><td>{{$p->qnt}}</td><td>{{$p->price_per_DT}}DTN</td><td><img height='100px' src="{{asset('storage/product_img/'.$p->product_image)}}"></td>
-				</tr>
-				@endforeach
-			</table>
+			@include("includes.order_list" ,["chart_id"=>$last_order->chart_id])
 			
 			<h4> full price: {{$last_order->price_per_DT}}DTN</h4>
 			@else

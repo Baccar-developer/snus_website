@@ -6,6 +6,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
 	@vite('resources/css/app.css')
 	@vite('resources/js/app.js')
+	<link rel="icon" href="{{asset('favicon.svg')}}">
 	<script
 			  src="https://code.jquery.com/jquery-3.7.1.js"
 			  integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
@@ -16,7 +17,9 @@
 <body class='bg-dark text-light'>
 <nav class="navbar navbar-expand-lg bg-danger ">
 	  <div class="container-fluid ">
-	    <a class="navbar-brand fs-3 text-light"  href="{{url('/')}}">LOGO</a>
+	    <a class="navbar-brand fs-4 text-dark d-flex align-items-end"  href="{{url('/')}}">
+	    <img srcset="{{asset('favicon.svg')}}" height=70px>
+	    <p class="me-auto"><span class="fs-2">S</span>em<span class="fs-2">S</span>em<span class="fs-2">S</span>tore</a></p>
 	    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 	      <span class="navbar-toggler-icon"></span>
 	    </button>
@@ -30,12 +33,14 @@
 	        </li>
 	        <li class="nav-item">
 	          <a class="nav-link fs-4 @yield('about_active')" href="{{url('/about_us')}}">about_us</a>
-	        </li><li class="nav-item">
-	          <a class="nav-link fs-4 @yield('login_active')" href="{{url('/login')}}">login</a>
-	        </li>
-	        <li class="nav-item">
-	        </li>
 	      </ul>
+	      		@guest
+	          <a class="fs-5 @yield('login_active') login-link" href="{{url('/login')}}">login <i class="fa-solid fa-right-to-bracket"></i></a>
+	          @endguest
+	          
+	          @auth
+	          <a class="fs-5 @yield('login_active') login-link" href="{{url('/logout')}}">logout <i class="fa-solid fa-right-from-bracket"></i></a>
+	          @endauth
 	    </div>
 	  </div>
 	</nav>
@@ -68,7 +73,6 @@
 	</ul>
 	</aside>
 	@endauth
-    <div class='container-fluid p-0 m-0'>
     @if(session()->has('msg'))
     
     <p class="alert alert-success fs-5">{{session()->get('msg')}}</p>
@@ -81,16 +85,17 @@
         @endforeach
     </ul>
     @endif
-   </div>
+   
 @yield('content')
-<footer class="bg-danger p-5 " >
-	<ul>
-		<li>:**********phone number:</li>
-		<li><p>our social media pages</p>
-			<p><i class="fa-brands fa-facebook"></i></p></li>
-		<li>creator and first editor of this website: 'mohammed amine baccar'</li>
-	</ul>
-	<p class="ps-3">delivery to Sousse only</p>
+<footer class="bg-danger m-0 p-5 container-fluid" >
+	<p>our social media pages</p>
+	<p >
+	<a href="https://www.facebook.com/oussama.bouasker.7" class="text-light">
+	<i class="fa-brands fa-facebook m-2"></i></a><a href="https://www.instagram.com/semsem_store_/" class="text-light">
+	<i class="fa-brands fa-instagram m-2"></i></a></p>
+	
+	<p >delivery to Sousse only <i class="fa-solid fa-truck"></i></p>
+	<p >all rights are preserved <i class="fa-solid fa-copyright"></i></p>
 	
 </footer>
 </body>

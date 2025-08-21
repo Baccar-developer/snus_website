@@ -19,15 +19,27 @@ signup
 			<input type='tel' placeholder="+216" class="form-control py-2 mb-3" name="tel" value="{{old('tel')}}">
 			
 		<label class="text-danger form-label me-auto">password</label>
+		<div class="d-flex align-items-center">
 			<input type='password' placeholder="enter your password" class="form-control py-2 mb-3" name="password" value="{{old('password')}}">
-			
+			<i class="fa-regular fa-eye"></i>
+		</div>
 		<label class="text-danger form-label me-auto">confirm password</label>
+		<div class="d-flex align-items-center">
 			<input type='password' placeholder="confirm your password" class="form-control py-2 mb-3" name="password-confirme" value="{{old('password-confirme')}}">
-			
+			<i class="fa-regular fa-eye"></i>
+		</div>
     		<br>
     		<button type="submit" class="btn btn-danger fs-3 rounded-5 px-4">Sign in</button>
     		</form>
-    		<a class="fs-6 text-danger" href="{{url('/login')}}">alredy have account?</a> 
+    		<a class="fs-6 text-danger" href="{{url('/login')}}">already have account?</a> 
     	</div>
 	</div>
+	<script>
+		$('i').mousedown(function(){
+			$(this).parent().children("input").attr("type" ,"text");
+		});
+		$('i').mouseup(function(){
+			$(this).parent().children("input").attr("type" ,"password");
+		});
+	</script>
 @endsection

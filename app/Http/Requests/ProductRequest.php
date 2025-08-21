@@ -24,8 +24,7 @@ class ProductRequest extends FormRequest
     {
         return [
             "name"=>"string|min:3",
-            "desc"=>'min:1|max:128',
-            "image"=>"nullable|image|mimes:png ,jpeg,gif|max:10000"
+            "image"=>"image|mimes:png,jpeg,webp|max:10000"
             
         ];
     }

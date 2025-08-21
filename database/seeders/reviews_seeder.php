@@ -17,12 +17,20 @@ class reviews_seeder extends Seeder
     public function run(): void
     {
         $r =1;
+
         foreach (products::pluck("product_id") as $p){
             foreach (User::pluck("id") as $c){
                 if(rand(1,$r) ==$r){
-                    reviews::factory(1)->create(["product_id"=>$p ,"customer_id" =>$c]);
+                    $rate = rand(0,5);
+                    reviews::factory(1)->create(["product_id"=>$p ,"customer_id" =>$c ,"rate"=>$rate]);
                 }
+                    
             }
+            $reviews =  reviews::where("product_id" ,$p);
+            $ratings = $reviews->count();
+            $rate = $reviews->sum("rate");
+            products::where("product_id" ,$p)->update(["ratings" =>$ratings ,"product_rate"=>$rate/$ratings]);
+            
         }
     }
 }
